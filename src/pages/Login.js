@@ -1,20 +1,26 @@
 // ** React Imports
 import { useSkin } from "@hooks/useSkin";
 import { Link } from "react-router-dom";
+import React from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { loginStep } from "../services/api/auth/login.api";
+import toast, { Toaster } from "react-hot-toast";
+import useStore from "../constant/store/login";
+import { loginValidation } from "../@core/validations/login";
 
 // ** Icons Imports
 import { Facebook, Twitter, Mail, GitHub } from "react-feather";
 
 // ** Custom Components
 import InputPasswordToggle from "@components/input-password-toggle";
-
+import {Formik,Form,Field} from "formik"
 // ** Reactstrap Imports
 import {
   Row,
   Col,
   CardTitle,
   CardText,
-  Form,
   Label,
   Input,
   Button,
@@ -28,6 +34,27 @@ import illustrationsDark from "@src/assets/images/pages/login-v2-dark.svg";
 import "@styles/react/pages/page-authentication.scss";
 
 const Login = () => {
+  const setLoginInfo = useStore((state) => state.setLoginInfo);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (value) => {  
+    try {  
+      const data = await loginStep(value);
+  
+      if (data.success) {
+        toast.success(data.message || "ورود موفقیت‌آمیز بود!");
+        if (data?.token) {
+          localStorage.setItem("token", data?.token);
+          navigate("/home");
+        }
+      } else {
+        toast.error(data.message || "خطایی رخ داده است!");
+      }
+    } catch (error) {
+      toast.error("مشکلی در ارتباط با سرور پیش آمده!");
+    }
+  };
   const { skin } = useSkin();
 
   const source = skin === "dark" ? illustrationsDark : illustrationsLight;
@@ -121,45 +148,37 @@ const Login = () => {
             <CardText className="mb-2">
               Please sign-in to your account and start the adventure
             </CardText>
-            <Form
-              className="auth-login-form mt-2"
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <div className="mb-1">
-                <Label className="form-label" for="login-email">
-                  Email
-                </Label>
-                <Input
-                  type="email"
-                  id="login-email"
-                  placeholder="john@example.com"
-                  autoFocus
-                />
-              </div>
-              <div className="mb-1">
-                <div className="d-flex justify-content-between">
-                  <Label className="form-label" for="login-password">
-                    Password
-                  </Label>
-                  <Link to="/forgot-password">
-                    <small>Forgot Password?</small>
-                  </Link>
-                </div>
-                <InputPasswordToggle
-                  className="input-group-merge"
-                  id="login-password"
-                />
-              </div>
-              <div className="form-check mb-1">
-                <Input type="checkbox" id="remember-me" />
-                <Label className="form-check-label" for="remember-me">
-                  Remember Me
-                </Label>
-              </div>
-              <Button tag={Link} to="/" color="primary" block>
-                Sign in
-              </Button>
-            </Form>
+            <Formik
+  initialValues={{
+    password: "",
+    phoneOrGmail: "",
+  }}
+  validationSchema={loginValidation}
+  onSubmit={handleSubmit}
+>
+  {({ isSubmitting }) => (
+    <Form className="auth-login-form mt-2">
+      <div className="mb-1">
+        <Label className="form-label" htmlFor="phoneOrGmail">Email</Label>
+        <Field type="email" name="phoneOrGmail" id="phoneOrGmail" placeholder="john@example.com" className="form-control" />
+      </div>
+      <div className="mb-1">
+        <div className="d-flex justify-content-between">
+          <Label className="form-label" htmlFor="password">Password</Label>
+          <Link to="/forgot-password"><small>Forgot Password?</small></Link>
+        </div>
+        <Field type="password" name="password" id="password" placeholder="Enter your password" className="form-control" />
+      </div>
+      <div className="form-check mb-1">
+        <Field type="checkbox" name="rememberMe" className="form-check-input" id="remember-me" />
+        <Label className="form-check-label" htmlFor="remember-me">Remember Me</Label>
+      </div>
+      <Button type="submit" color="primary" block disabled={isSubmitting}>
+        {isSubmitting ? "Signing in..." : "Sign in"}
+      </Button>
+    </Form>
+  )}
+</Formik>
             <p className="text-center mt-2">
               <span className="me-25">New on our platform?</span>
               <Link to="/register">
