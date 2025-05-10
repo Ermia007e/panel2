@@ -46,7 +46,7 @@ const Login = () => {
         toast.success(data.message || "ورود موفقیت‌آمیز بود!");
         if (data?.token) {
           localStorage.setItem("token", data?.token);
-          navigate("/home");
+          navigate("/Dashboard");
         }
       } else {
         toast.error(data.message || "خطایی رخ داده است!");
