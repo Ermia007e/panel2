@@ -21,7 +21,7 @@ const isToday = (date) => {
     /* eslint-enable */
   );
 };
-
+  
 /**
  ** Format and return date in Humanize format
  ** Intl docs: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/format
