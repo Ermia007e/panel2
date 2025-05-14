@@ -12,12 +12,12 @@ export default () => {
       global: 'globalThis'
     },
     server: {
-      port: 3000,
-      proxy: 'https://pixinvent.com/',
-      cors: {
-        origin: ['https://pixinvent.com/', 'http://localhost:3000'],
-        methods: ['GET', 'PATCH', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+      proxy: {
+        "/api": {
+          target: "https://classapi.sepehracademy.ir",
+          changeOrigin: true,
+          secure: false,
+        }
       }
     },
     css: {
@@ -32,12 +32,7 @@ export default () => {
     },
     resolve: {
       alias: [
-        {
-          find: /^~.+/,
-          replacement: val => {
-            return val.replace(/^~/, '')
-          }
-        },
+        { find: /^~.+/, replacement: val => val.replace(/^~/, '') },
         { find: 'stream', replacement: 'stream-browserify' },
         { find: 'crypto', replacement: 'crypto-browserify' },
         { find: '@src', replacement: path.resolve(__dirname, 'src') },
@@ -65,14 +60,9 @@ export default () => {
     },
     optimizeDeps: {
       esbuildOptions: {
-        loader: {
-          '.js': 'jsx'
-        },
+        loader: { '.js': 'jsx' },
         plugins: [
-          NodeGlobalsPolyfillPlugin({
-            buffer: true,
-            process: true
-          }),
+          NodeGlobalsPolyfillPlugin({ buffer: true, process: true }),
           {
             name: 'load-js-files-as-jsx',
             setup(build) {

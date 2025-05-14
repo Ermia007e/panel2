@@ -1,0 +1,106 @@
+@import "tailwindcss";
+body{
+  direction: rtl;
+  overflow-x: hidden;
+  font-family: IranYekan;
+}
+
+html {
+	transition: background-color 0.5s ease, color 0.4s ease;
+  }
+  
+
+
+    
+	@font-face {
+	   font-family: Iran YekanThin;
+	   font-style: normal;
+	   font-weight: 100;
+	   src: url('assets/font/Woff/IRANYekanXFaNum-Thin.woff') format('Woff'),   
+	   url('assets/font/Woff2/IRANYekanXFaNum-Thin.woff2') format('Woff2');		 
+   }     
+  
+	@font-face {
+	   font-family: Iran YekanUltraLight;
+	   font-style: normal;
+	   font-weight: 200;
+	   src: url('assets/font/Woff/IRANYekanXFaNum-UltraLight.woff') format('Woff'),   
+	   url('assets/font/Woff2/IRANYekanXFaNum-UltraLight.woff2') format('Woff2');		 
+   }
+            
+    @font-face {
+	font-family: Iran YekanLight;
+	font-style: normal;
+	font-weight: 300;
+	src: url('assets/font/Woff/IRANYekanXFaNum-Light.woff') format('Woff'),   
+	url('assets/font/Woff2/IRANYekanXFaNum-Light.woff2') format('Woff2');	
+	}
+   
+	@font-face {
+		font-family: IranYekan;
+		font-style: normal;
+		font-weight: normal;
+		src: url('assets/font/Woff/IRANYekanXFaNum-Regular.woff') format('Woff'),   
+		url('assets/font/Woff2/IRANYekanXFaNum-Regular.woff2') format('Woff2');		 
+	}
+
+	@font-face {
+		font-family: Iran YekanMedium;
+		font-style: normal;
+		font-weight: 500;
+		src: url('assets/font/Woff/IRANYekanXFaNum-Medium.woff') format('Woff'),   
+		url('assets/font/Woff2/IRANYekanXFaNum-Medium.woff2') format('Woff2');		 
+	}  
+
+	@font-face {
+		font-family: Iran YekanDemiBold;
+		font-style: normal;
+		font-weight: 600;
+		src: url('assets/font/Woff/IRANYekanXFaNum-DemiBold.woff') format('Woff'),   
+		url('assets/font/Woff2/IRANYekanXFaNum-DemiBold.woff2') format('Woff2');		 
+	} 
+	
+	@font-face {
+		font-family: Iran YekanBold;
+		font-style: normal;
+		font-weight: 700;
+		src: url('assets/font/Woff/IRANYekanXFaNum-Bold.woff') format('Woff'),   
+		url('assets/font/Woff2/IRANYekanXFaNum-Bold.woff2') format('Woff2');		 
+	} 
+	
+	@font-face {
+		font-family: Iran YekanExtraBold;
+		font-style: normal;
+		font-weight: 800;
+		src: url('assets/font/Woff/IRANYekanXFaNum-ExtraBold.woff') format('Woff'),   
+		url('assets/font/Woff2/IRANYekanXFaNum-ExtraBold.woff2') format('Woff2');		 
+	} 
+	
+	@font-face {
+		font-family: Iran YekanBlack;
+		font-style: normal;
+		font-weight: 900;
+		src: url('assets/font/Woff/IRANYekanXFaNum-Black.woff') format('Woff'),   
+		url('assets/font/Woff2/IRANYekanXFaNum-Black.woff2') format('Woff2');		 
+	} 
+
+.light{
+		--bg-primary:#ffffff;
+	}
+.dark{
+	--bg-primary:#232323;
+}
+
+
+@theme{
+	--font-yekan-100 : Iran YekanThin;
+	--font-yekan-200 : Iran YekanUltraLight;
+	--font-yekan-300 : Iran YekanLight;
+	--font-yekan-400 : Iran YekanRegular;
+	--font-yekan-500 : Iran YekanMedium;
+	--font-yekan-600 : Iran YekanDemiBold;
+	--font-yekan-700 : Iran YekanBold;
+	--font-yekan-800 : Iran YekanExtraBold;
+	--font-yekan-900 : Iran YekanBlack;
+	--color-bg-primary : var(--bg-primary)
+}

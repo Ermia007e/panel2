@@ -20,20 +20,26 @@ const getLayout = {
 };
 
 // ** Document title
-const TemplateTitle = "%s - Vuexy React Admin Template";
+const TemplateTitle = "%s - Bahr React Admin Template";
 
 // ** Default Route
 const DefaultRoute = "/login";
 
+<<<<<<< HEAD
 const Home = lazy(() => import("../../pages/Home"));
 const NewsList =lazy(() => import("../../pages/newsList/NewsList"));
 const AddNews =lazy(() => import("../../pages/newsList/AddNews"));
 const CategoryList =lazy(() => import("../../pages/newsList/CategoryList"));
+=======
+const Dashboard = lazy(() => import("../../pages/Dashboard"));
+>>>>>>> ceb7c7a700f36f80be71c2b9643591c0d348821c
 const SecondPage = lazy(() => import("../../pages/SecondPage"));
 const Login = lazy(() => import("../../pages/Login"));
 const Register = lazy(() => import("../../pages/Register"));
 const ForgotPassword = lazy(() => import("../../pages/ForgotPassword"));
 const Error = lazy(() => import("../../pages/Error"));
+const DashboardAnalytics = lazy(() => import('../../views/dashboard/analytics'))
+const DashboardEcommerce = lazy(() => import('../../views/dashboard/ecommerce'))
 const Sample = lazy(() => import("../../pages/Sample"));
 
 // ** Merge Routes
@@ -44,8 +50,16 @@ const Routes = [
     element: <Navigate replace to={DefaultRoute} />,
   },
   {
-    path: "/home",
-    element: <Home />,
+    path: "/Dashboard",
+    element: <Dashboard />,
+  },
+  {
+    path: '/dashboard/analytics',
+    element: <DashboardAnalytics />
+  },
+  {
+    path: '/dashboard/ecommerce',
+    element: <DashboardEcommerce />
   },
   {
     path: "/NewsList",
@@ -138,7 +152,7 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
             // eslint-disable-next-line multiline-ternary
             isObjEmpty(route.element.props) && isBlank === false
               ? // eslint-disable-next-line multiline-ternary
-                LayoutWrapper
+              LayoutWrapper
               : Fragment;
 
           route.element = (

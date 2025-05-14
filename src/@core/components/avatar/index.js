@@ -11,7 +11,7 @@ import { Badge } from "reactstrap";
 const Avatar = forwardRef((props, ref) => {
   // ** Props
   const {
-    img,
+    src,
     size,
     icon,
     color,
@@ -50,7 +50,7 @@ const Avatar = forwardRef((props, ref) => {
       ref={ref}
       {...rest}
     >
-      {img === false || img === undefined ? (
+      {src === false || src === undefined ? (
         <span
           className={classnames("avatar-content", {
             "position-relative": badgeUp,
@@ -75,7 +75,7 @@ const Avatar = forwardRef((props, ref) => {
           className={classnames({
             [imgClassName]: imgClassName,
           })}
-          src={img}
+          src={src}
           alt="avatarImg"
           height={imgHeight && !size ? imgHeight : 32}
           width={imgWidth && !size ? imgWidth : 32}
