@@ -25,14 +25,7 @@ const TemplateTitle = "%s - Bahr React Admin Template";
 // ** Default Route
 const DefaultRoute = "/login";
 
-<<<<<<< HEAD
-const Home = lazy(() => import("../../pages/Home"));
-const NewsList =lazy(() => import("../../pages/newsList/NewsList"));
-const AddNews =lazy(() => import("../../pages/newsList/AddNews"));
-const CategoryList =lazy(() => import("../../pages/newsList/CategoryList"));
-=======
 const Dashboard = lazy(() => import("../../pages/Dashboard"));
->>>>>>> ceb7c7a700f36f80be71c2b9643591c0d348821c
 const SecondPage = lazy(() => import("../../pages/SecondPage"));
 const Login = lazy(() => import("../../pages/Login"));
 const Register = lazy(() => import("../../pages/Register"));
