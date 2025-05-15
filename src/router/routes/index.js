@@ -55,18 +55,6 @@ const Routes = [
     element: <DashboardEcommerce />
   },
   {
-    path: "/NewsList",
-    element: <NewsList />,
-  },
-  {
-    path: "/AddNews",
-    element: <AddNews />,
-  },
-  {
-    path: "/CategoryList",
-    element: <CategoryList />,
-  },
-  {
     path: "/sample",
     element: <Sample />,
   },

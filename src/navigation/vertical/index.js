@@ -1,5 +1,5 @@
 import { Mail, Home, Airplay, Circle } from "react-feather";
-import news from "./news";
+
 
 export default [
   {
