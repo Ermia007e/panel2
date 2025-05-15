@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 // ** Custom Components
 import Avatar from "@components/avatar";
+import { useQuery } from "react-query";
 
 // ** Third Party Components
 import {
@@ -26,8 +27,15 @@ import {
 
 // ** Default Avatar Image
 import defaultAvatar from "@src/assets/images/portrait/small/avatar-s-11.jpg";
+import http from '../../../../services/interceptor/index'
 
 const UserDropdown = () => {
+  const { data: userInfo } = useQuery({
+    queryKey: ["userInfo2"],
+    queryFn: () => http.get("/SharePanel/GetProfileInfo"),
+    
+  });
+  console.log(userInfo);
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle
@@ -37,15 +45,16 @@ const UserDropdown = () => {
         onClick={(e) => e.preventDefault()}
       >
         <div className="user-nav d-sm-flex d-none">
-          <span className="user-name fw-bold">John Doe</span>
+          <span className="user-name fw-bold"> {userInfo?.fName} {userInfo?.lName}</span>
           <span className="user-status">Admin</span>
         </div>
         <Avatar
-          img={defaultAvatar}
-          imgHeight="40"
-          imgWidth="40"
-          status="online"
-        />
+  src={userInfo?.currentPictureAddress || defaultAvatar}
+  imgHeight="40"
+  imgWidth="40"
+  status="online"
+/>
+
       </DropdownToggle>
       <DropdownMenu end>
         <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>

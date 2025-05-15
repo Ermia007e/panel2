@@ -2,10 +2,24 @@ import { Mail, Home, Airplay, Circle } from "react-feather";
 
 export default [
   {
-    id: "home",
-    title: "Home",
+    id: "dashboard",
+    title: "dashboard",
     icon: <Home size={20} />,
-    navLink: "/home",
+    navLink: "/dashboard",
+    children: [
+      {
+        id: 'analyticsDash',
+        title: 'Analytics',
+        icon: <Circle size={12} />,
+        navLink: '/dashboard/analytics'
+      },
+      {
+        id: 'eCommerceDash',
+        title: 'eCommerce',
+        icon: <Circle size={12} />,
+        navLink: '/dashboard/ecommerce'
+      }
+    ],
   },
   {
     id: "secondPage",
@@ -17,14 +31,5 @@ export default [
     id: "smaplePage",
     title: "Sample Page",
     icon: <Airplay size={20} />,
-    // navLink: "/sample",
-    children: [
-      {
-        id: "invoiceList",
-        title: "List",
-        icon: <Circle size={12} />,
-        navLink: "/apps/invoice/list",
-      },
-    ],
   },
 ];
