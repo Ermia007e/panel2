@@ -19,7 +19,7 @@ const Dashboard = () => {
           <CardText>
             Please make sure to read our{" "}
             <CardLink
-              href="https://pixinvent.com/demo/vuexy-react-admin-dashboard-template/documentation/"
+              href="https://pixinvent.com/demo/Bahr-react-admin-dashboard-template/documentation/"
               target="_blank"
             >
               Template Documentation
@@ -41,7 +41,7 @@ const Dashboard = () => {
           <CardText>
             Please read our{" "}
             <CardLink
-              href="https://pixinvent.com/demo/vuexy-react-admin-dashboard-template/documentation/docs/development/auth"
+              href="https://pixinvent.com/demo/Bahr-react-admin-dashboard-template/documentation/docs/development/auth"
               target="_blank"
             >
               JWT Documentation

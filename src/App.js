@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-
+import "./font.css"
 // ** Router Import
 import Router from "./router/Router";
 const queryClient = new QueryClient();
