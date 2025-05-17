@@ -20,7 +20,7 @@ const getLayout = {
 };
 
 // ** Document title
-const TemplateTitle = "%s - Vuexy React Admin Template";
+const TemplateTitle = "%s - Bahr React Admin Template";
 
 // ** Default Route
 const DefaultRoute = "/login";
@@ -61,7 +61,7 @@ const Routes = [
     element: <DashboardAnalytics />
   },
   {
-    path: '/dashboard/ecommerce', 
+    path: '/dashboard/ecommerce',
     element: <DashboardEcommerce />
   },
   {
@@ -143,7 +143,7 @@ const MergeLayoutRoutes = (layout, defaultLayout) => {
             // eslint-disable-next-line multiline-ternary
             isObjEmpty(route.element.props) && isBlank === false
               ? // eslint-disable-next-line multiline-ternary
-                LayoutWrapper
+              LayoutWrapper
               : Fragment;
 
           route.element = (

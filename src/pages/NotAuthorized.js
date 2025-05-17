@@ -8,7 +8,7 @@ import { Button } from "reactstrap";
 import { useSkin } from "@hooks/useSkin";
 
 // ** Utils
-import {} from "@utils";
+import { } from "@utils";
 
 // ** Illustrations Imports
 import illustrationsLight from "@src/assets/images/pages/not-authorized.svg";
@@ -92,7 +92,7 @@ const NotAuthorized = () => {
             </g>
           </g>
         </svg>
-        <h2 className="brand-text text-primary ms-1">Vuexy</h2>
+        <h2 className="brand-text text-primary ms-1">Bahr</h2>
       </Link>
       <div className="misc-inner p-2 p-sm-3">
         <div className="w-100 text-center">
