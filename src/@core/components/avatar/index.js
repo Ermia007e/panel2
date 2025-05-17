@@ -30,14 +30,15 @@ const Avatar = forwardRef((props, ref) => {
     ...rest
   } = props;
 
-  // ** Function to extract initials from content
+  // ** Function to extract initials from content (ایمن شده)
   const getInitials = (str) => {
+    if (!str || typeof str !== "string") return "";
     const results = [];
     const wordArray = str.split(" ");
     wordArray.forEach((e) => {
-      results.push(e[0]);
+      if (e && e.length > 0) results.push(e[0]);
     });
-    return results.join("");
+    return results.join("").toUpperCase();
   };
 
   return (
@@ -57,7 +58,7 @@ const Avatar = forwardRef((props, ref) => {
           })}
           style={contentStyles}
         >
-          {initials ? getInitials(content) : content}
+          {initials ? getInitials(content) : (content || "")}
 
           {icon ? icon : null}
           {badgeUp ? (

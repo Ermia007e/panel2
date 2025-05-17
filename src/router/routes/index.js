@@ -31,6 +31,8 @@ const Login = lazy(() => import("../../pages/Login"));
 const Register = lazy(() => import("../../pages/Register"));
 const ForgotPassword = lazy(() => import("../../pages/ForgotPassword"));
 const Error = lazy(() => import("../../pages/Error"));
+const EditUser = lazy(() => import("../../views/user/AllUsers/EditUser"));
+const UserDetails = lazy(() => import('../../views/user/AllUsers/UserDetails'))
 const DashboardAnalytics = lazy(() => import('../../views/dashboard/analytics'))
 const DashboardEcommerce = lazy(() => import('../../views/dashboard/ecommerce'))
 const Sample = lazy(() => import("../../pages/Sample"));
@@ -45,6 +47,14 @@ const Routes = [
   {
     path: "/Dashboard",
     element: <Dashboard />,
+  },
+  {
+  path: "/users/details/:id",
+  element: <UserDetails />
+},
+  {
+    path:"/users/edit/:id",
+    element:<EditUser />,
   },
   {
     path: '/dashboard/analytics',
