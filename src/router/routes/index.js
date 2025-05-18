@@ -33,6 +33,7 @@ const ForgotPassword = lazy(() => import("../../pages/ForgotPassword"));
 const Error = lazy(() => import("../../pages/Error"));
 const EditUser = lazy(() => import("../../views/user/AllUsers/EditUser"));
 const UserDetails = lazy(() => import('../../views/user/AllUsers/UserDetails'))
+const Comment = lazy(() => import('../../views/Comment/Comment'))
 const DashboardAnalytics = lazy(() => import('../../views/dashboard/analytics'))
 const DashboardEcommerce = lazy(() => import('../../views/dashboard/ecommerce'))
 const Sample = lazy(() => import("../../pages/Sample"));
@@ -55,6 +56,10 @@ const Routes = [
   {
     path:"/users/edit/:id",
     element:<EditUser />,
+  },
+    {
+    path:"/Comment",
+    element:<Comment />,
   },
   {
     path: '/dashboard/analytics',

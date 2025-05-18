@@ -47,6 +47,7 @@ const DataTableServerSide = () => {
       window.handleDeleteUser = null
       window.handleAccessUser = null
       window.handleEditUser = null
+
     }
   }, [])
 
@@ -173,6 +174,7 @@ const DataTableServerSide = () => {
           >
             ویرایش
           </button>
+
           <button
             style={{
               background: "#1890ff",
