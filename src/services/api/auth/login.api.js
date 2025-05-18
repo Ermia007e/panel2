@@ -9,8 +9,8 @@ export const loginStep = async (credentials) => {
     console.log("Login Response:", result); 
     return result;
   }catch (error) {
-    console.log("Login Error:", error.response?.data || error.message);
-    toast.error(error.response?.data?.message || "مشکلی در ارتباط با سرور پیش آمده!");
+    throw error
+
   }
   
 };

@@ -40,7 +40,7 @@ const Login = () => {
 
   const handleSubmit = async (value) => {
     try {
-      const {data} = await loginStep(value);
+      const data = await loginStep(value);
 
       if (data?.success) {
         toast.success(data?.message || "ورود موفقیت‌آمیز بود!");

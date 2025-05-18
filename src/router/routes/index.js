@@ -12,6 +12,11 @@ import PublicRoute from "@components/routes/PublicRoute";
 
 // ** Utils
 import { isObjEmpty } from "@utils";
+import Courses from "../../pages/Courses/CoursesList";
+import YourCoursesList from "../../pages/Courses/YourCoursesList";
+import UserCourseReserve from "../../pages/Courses/UserCourseReserve";
+import CreateNewCourses from "../../pages/Courses/CreateNewCourses";
+import CourseDeatil from "../../pages/Courses/Detail/CourseDetail";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -55,12 +60,24 @@ const Routes = [
     element: <DashboardEcommerce />
   },
   {
-    path: "/sample",
-    element: <Sample />,
+    path: "/dashboard/CoursesList",
+    element: <Courses />,
   },
   {
-    path: "/second-page",
-    element: <SecondPage />,
+    path: "/dashboard/YourCoursesList",
+    element: <YourCoursesList />,
+  },
+  {
+    path: "/dashboard/YourReserveCoursesList",
+    element: <UserCourseReserve />,
+  },
+  {
+    path: "/course-details/:courseId?",
+    element: <CourseDeatil/>,
+  },
+  {
+    path: "/dashboard/CreateNewCourse",
+    element: <CreateNewCourses />,
   },
   {
     path: "/login",
