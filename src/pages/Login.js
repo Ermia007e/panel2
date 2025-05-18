@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginStep } from "../services/api/auth/login.js";
+import { loginStep } from "../services/api/auth/login.api";
 import toast, { Toaster } from "react-hot-toast";
 import useStore from "../constant/store/login";
 import { loginValidation } from "../@core/validations/login";
