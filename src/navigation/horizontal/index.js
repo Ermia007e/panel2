@@ -9,7 +9,7 @@ export default [
   },
   {
     id: "secondPage",
-    title: "Second Page",
+    title: "کاربران",
     icon: <Mail size={20} />,
     navLink: "/second-page",
   },

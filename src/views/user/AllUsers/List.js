@@ -10,11 +10,18 @@ import { Card, CardHeader, CardTitle, Input, Label, Row, Col } from 'reactstrap'
 import DeleteModal from './DeleteModal'
 import AccessModal from './AccessModal'
 import { useNavigate } from 'react-router-dom'
+import Breadcrumbs from './Breadcrumbs'
+
+const useDarkMode = () => {
+  const skin = useSelector(state => state.layout?.skin)
+  return skin === 'dark'
+}
 
 const DEFAULT_NAME = "نام‌ناشناخته"
 const DEFAULT_LASTNAME = "ناشناخته"
 
 const DataTableServerSide = () => {
+  const darkMode = useDarkMode()
   const dispatch = useDispatch()
   const store = useSelector(state => state.dataTables)
   const navigate = useNavigate()
@@ -47,7 +54,6 @@ const DataTableServerSide = () => {
       window.handleDeleteUser = null
       window.handleAccessUser = null
       window.handleEditUser = null
-
     }
   }, [])
 
@@ -159,31 +165,37 @@ const DataTableServerSide = () => {
       name: "عملیات",
       minWidth: "260px",
       cell: row => (
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, width: "100%" }}>
+        <div style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: 8,
+          width: "100%"
+        }}>
           <button
             style={{
-              background: "#ffe066",
-              color: "#333",
+              background: darkMode ? "#ffd666" : "#ffe066",
+              color: darkMode ? "#222" : "#333",
               border: "none",
               borderRadius: 6,
               padding: "4px 12px",
               fontWeight: "bold",
-              cursor: "pointer"
+              cursor: "pointer",
+              transition: "all 0.2s"
             }}
             onClick={() => window.handleEditUser && window.handleEditUser(row)}
           >
             ویرایش
           </button>
-
           <button
             style={{
-              background: "#1890ff",
+              background: darkMode ? "#1765ad" : "#1890ff",
               color: "#fff",
               border: "none",
               borderRadius: 6,
               padding: "4px 12px",
               fontWeight: "bold",
-              cursor: "pointer"
+              cursor: "pointer",
+              transition: "all 0.2s"
             }}
             onClick={() => window.handleAccessUser && window.handleAccessUser(row)}
           >
@@ -191,13 +203,14 @@ const DataTableServerSide = () => {
           </button>
           <button
             style={{
-              background: "#ff4d4f",
+              background: darkMode ? "#a61d24" : "#ff4d4f",
               color: "#fff",
               border: "none",
               borderRadius: 6,
               padding: "4px 12px",
               fontWeight: "bold",
-              cursor: "pointer"
+              cursor: "pointer",
+              transition: "all 0.2s"
             }}
             onClick={() => window.handleDeleteUser && window.handleDeleteUser(row)}
           >
@@ -208,8 +221,29 @@ const DataTableServerSide = () => {
     }
   ]
 
+  // استایل دارک‌مد
+  const darkStyles = {
+    background: "#18191a",
+    color: "#e4e6eb",
+    borderColor: "#333",
+    transition: "all 0.2s"
+  }
+  const darkInput = {
+    background: "#23272b",
+    color: "#e4e6eb",
+    borderColor: "#444",
+    transition: "all 0.2s"
+  }
+
   return (
     <Fragment>
+      <Breadcrumbs
+        title="لیست کاربران"
+        data={[
+          { title: "داشبورد", link: "/" },
+          { title: "کاربران" }
+        ]}
+      />
       <DeleteModal
         open={deleteModalOpen}
         user={selectedUser}
@@ -221,20 +255,21 @@ const DataTableServerSide = () => {
         user={accessUser}
         onClose={handleAccessClose}
       />
-      <Card>
-        <CardHeader className='border-bottom'>
-          <CardTitle tag='h4'>Server Side</CardTitle>
+      <Card className={darkMode ? "dark-mode" : ""} style={darkMode ? darkStyles : {}}>
+        <CardHeader className='border-bottom' style={darkMode ? { borderColor: "#333" } : {}}>
+          <CardTitle tag='h4' style={darkMode ? { color: "#e4e6eb" } : {}}>Server Side</CardTitle>
         </CardHeader>
         <Row className='mx-0 mt-1 mb-50'>
           <Col sm='6'>
             <div className='d-flex align-items-center'>
-              <Label for='sort-select'>show</Label>
+              <Label for='sort-select' style={darkMode ? { color: "#e4e6eb" } : {}}>show</Label>
               <Input
                 className='dataTable-select'
                 type='select'
                 id='sort-select'
                 value={rowsPerPage}
                 onChange={handlePerPage}
+                style={darkMode ? darkInput : {}}
               >
                 <option value={7}>7</option>
                 <option value={10}>10</option>
@@ -243,11 +278,11 @@ const DataTableServerSide = () => {
                 <option value={75}>75</option>
                 <option value={100}>100</option>
               </Input>
-              <Label for='sort-select'>entries</Label>
+              <Label for='sort-select' style={darkMode ? { color: "#e4e6eb" } : {}}>entries</Label>
             </div>
           </Col>
           <Col className='d-flex align-items-center justify-content-sm-end mt-sm-0 mt-1' sm='6'>
-            <Label className='me-1' for='search-input'>
+            <Label className='me-1' for='search-input' style={darkMode ? { color: "#e4e6eb" } : {}}>
               Search
             </Label>
             <Input
@@ -257,6 +292,7 @@ const DataTableServerSide = () => {
               id='search-input'
               value={searchValue}
               onChange={handleFilter}
+              style={darkMode ? darkInput : {}}
             />
           </Col>
         </Row>
@@ -265,16 +301,86 @@ const DataTableServerSide = () => {
             noHeader
             pagination
             paginationServer
-            className='react-dataTable'
+            className={`react-dataTable${darkMode ? " dark-mode-table" : ""}`}
             columns={columns}
-            sortIcon={<ChevronDown size={10} />}
+            sortIcon={<ChevronDown size={10} color={darkMode ? "#e4e6eb" : "#222"} />}
             paginationComponent={CustomPagination}
             data={dataToRender()}
             expandableRows
             expandableRowsComponent={ExpandableTable}
+            customStyles={darkMode ? {
+              rows: {
+                style: {
+                  background: "#23272b",
+                  color: "#e4e6eb",
+                  borderBottom: "1px solid #333"
+                }
+              },
+              headCells: {
+                style: {
+                  background: "#18191a",
+                  color: "#e4e6eb",
+                  borderColor: "#333"
+                }
+              },
+              cells: {
+                style: {
+                  background: "#23272b",
+                  color: "#e4e6eb"
+                }
+              },
+              pagination: {
+                style: {
+                  background: "#18191a",
+                  color: "#e4e6eb"
+                }
+              }
+            } : {}}
           />
         </div>
       </Card>
+      {darkMode && (
+        <style>
+          {`
+          .dark-mode {
+            background: #18191a !important;
+            color: #e4e6eb !important;
+            border-color: #333 !important;
+          }
+          .dark-mode-table .rdt_TableHead {
+            background: #18191a !important;
+            color: #e4e6eb !important;
+          }
+          .dark-mode-table .rdt_TableRow {
+            background: #23272b !important;
+            color: #e4e6eb !important;
+            border-bottom: 1px solid #333 !important;
+          }
+          .dark-mode-table .rdt_TableCell {
+            background: #23272b !important;
+            color: #e4e6eb !important;
+          }
+          .dark-mode-table .rdt_Pagination {
+            background: #18191a !important;
+            color: #e4e6eb !important;
+          }
+          .dark-mode-table .rdt_ExpanderRow {
+            background: #23272b !important;
+            color: #e4e6eb !important;
+          }
+          .dark-mode-table .rdt_Pagination .page-link {
+            background: #23272b !important;
+            color: #e4e6eb !important;
+            border-color: #333 !important;
+          }
+          .dark-mode-table .rdt_Pagination .active .page-link {
+            background: #ffd666 !important;
+            color: #222 !important;
+            border-color: #ffd666 !important;
+          }
+          `}
+        </style>
+      )}
     </Fragment>
   )
 }

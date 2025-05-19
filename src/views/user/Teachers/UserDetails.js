@@ -1,14 +1,21 @@
-import { useEffect, useState, useRef, useLayoutEffect } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import http from '@src/services/interceptor'
 import { Card, CardBody, Row, Col, Spinner, Badge } from 'reactstrap'
 import gsap from 'gsap'
 import DeleteModal from './DeleteModal'
 import classnames from 'classnames'
+import { useSelector } from 'react-redux'
+
+const useDarkMode = () => {
+  const skin = useSelector(state => state.layout?.skin)
+  return skin === 'dark'
+}
 
 const UserDetails = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const darkMode = useDarkMode()
   const [teacher, setTeacher] = useState(null)
   const [loading, setLoading] = useState(true)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
@@ -45,6 +52,43 @@ const UserDetails = () => {
     setDeleting(false)
   }
 
+  // استایل‌های دارک‌مد
+  const darkCard = {
+    background: 'linear-gradient(135deg, #23272b 60%, #18191a 100%)',
+    color: '#e4e6eb',
+    boxShadow: '0 8px 32px #0008',
+    border: 'none'
+  }
+  const darkBtnDelete = {
+    background: '#a61d24',
+    color: '#fff',
+    border: 'none',
+    borderRadius: 8,
+    padding: '8px 32px',
+    fontWeight: 'bold',
+    fontSize: 16,
+    cursor: deleting ? 'not-allowed' : 'pointer',
+    opacity: deleting ? 0.7 : 1,
+    boxShadow: '0 2px 8px #a61d2433',
+    transition: 'background 0.2s, color 0.2s, transform 0.2s'
+  }
+  const darkBtnAccess = {
+    background: '#1765ad',
+    color: '#fff',
+    border: 'none',
+    borderRadius: 8,
+    padding: '8px 32px',
+    fontWeight: 'bold',
+    fontSize: 16,
+    cursor: 'pointer',
+    boxShadow: '0 2px 8px #1765ad33',
+    transition: 'background 0.2s, color 0.2s, transform 0.2s'
+  }
+  const darkLink = {
+    color: "#ffd666",
+    textDecoration: "underline"
+  }
+
   if (loading) return <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 300 }}><Spinner color="primary" /></div>
   if (!teacher) return <div className="text-center text-danger mt-4">معلم یافت نشد</div>
 
@@ -63,9 +107,11 @@ const UserDetails = () => {
           maxWidth: 600,
           margin: '40px auto',
           borderRadius: 22,
-          boxShadow: '0 8px 32px #0002',
+          boxShadow: darkMode ? '0 8px 32px #0008' : '0 8px 32px #0002',
           overflow: 'hidden',
-          background: 'linear-gradient(135deg, #f8fafc 60%, #e3e8ff 100%)'
+          ...(darkMode ? darkCard : {
+            background: 'linear-gradient(135deg, #f8fafc 60%, #e3e8ff 100%)'
+          })
         }}>
         <CardBody>
           <Row className="mb-3">
@@ -86,11 +132,11 @@ const UserDetails = () => {
                 onError={e => { e.target.src = "https://tanzolymp.com/images/default-non-user-no-photo-1.jpg" }}
               />
               <div style={{ marginTop: 16 }}>
-                <h3 style={{ fontWeight: 900, letterSpacing: 1 }}>{teacher.fullName}</h3>
+                <h3 style={{ fontWeight: 900, letterSpacing: 1, color: darkMode ? "#ffd666" : undefined }}>{teacher.fullName}</h3>
               </div>
               <div className="d-flex justify-content-center gap-2 mt-3">
                 <button
-                  style={{
+                  style={darkMode ? darkBtnDelete : {
                     background: '#ff4d4f',
                     color: '#fff',
                     border: 'none',
@@ -109,7 +155,7 @@ const UserDetails = () => {
                   حذف
                 </button>
                 <button
-                  style={{
+                  style={darkMode ? darkBtnAccess : {
                     background: '#1890ff',
                     color: '#fff',
                     border: 'none',
@@ -129,14 +175,34 @@ const UserDetails = () => {
             </Col>
           </Row>
           <Row className="mb-2">
-            <Col md="6"><b>تعداد دوره‌ها:</b> {teacher.courseCounts}</Col>
-            <Col md="6"><b>تعداد اخبار:</b> {teacher.newsCount}</Col>
+            <Col md="6"><b>تعداد دوره‌ها:</b> <span style={darkMode ? { color: "#ffd666" } : {}}>{teacher.courseCounts}</span></Col>
+            <Col md="6"><b>تعداد اخبار:</b> <span style={darkMode ? { color: "#ffd666" } : {}}>{teacher.newsCount}</span></Col>
           </Row>
           <Row className="mb-2">
-            <Col md="12"><b>لینکدین:</b> <a href={teacher.linkdinProfileLink} target="_blank" rel="noopener noreferrer">{teacher.linkdinProfileLink}</a></Col>
+            <Col md="12">
+              <b>لینکدین:</b>{' '}
+              {teacher.linkdinProfileLink
+                ? <a href={teacher.linkdinProfileLink} target="_blank" rel="noopener noreferrer" style={darkMode ? darkLink : {}}>{teacher.linkdinProfileLink}</a>
+                : <span style={{ color: "#888" }}>—</span>
+              }
+            </Col>
           </Row>
         </CardBody>
       </Card>
+      {darkMode && (
+        <style>
+          {`
+          .card {
+            background: linear-gradient(135deg, #23272b 60%, #18191a 100%) !important;
+            color: #e4e6eb !important;
+            border: none !important;
+          }
+          .card h3, .card b, .card span {
+            color: #ffd666 !important;
+          }
+          `}
+        </style>
+      )}
     </>
   )
 }

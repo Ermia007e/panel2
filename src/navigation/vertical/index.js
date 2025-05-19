@@ -3,7 +3,7 @@ import { Mail, Home, Airplay, Circle } from "react-feather";
 export default [
   {
     id: "dashboard",
-    title: "dashboard",
+    title: "داشبورد",
     icon: <Home size={20} />,
     navLink: "/dashboard",
     children: [
@@ -23,7 +23,7 @@ export default [
   },
   {
     id: "secondPage",
-    title: "Second Page",
+    title: "کاربران",
     icon: <Mail size={20} />,
     navLink: "/second-page",
   },

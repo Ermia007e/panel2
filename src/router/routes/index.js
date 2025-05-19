@@ -37,6 +37,7 @@ const Comment = lazy(() => import('../../views/Comment/Comment'))
 const DashboardAnalytics = lazy(() => import('../../views/dashboard/analytics'))
 const DashboardEcommerce = lazy(() => import('../../views/dashboard/ecommerce'))
 const Sample = lazy(() => import("../../pages/Sample"));
+const AddNews = lazy(()=> import("../../views/AddNews/AddNews"))
 
 // ** Merge Routes
 const Routes = [
@@ -56,6 +57,10 @@ const Routes = [
   {
     path:"/users/edit/:id",
     element:<EditUser />,
+  },
+    {
+    path:"/AddNews",
+    element:<AddNews />,
   },
     {
     path:"/Comment",

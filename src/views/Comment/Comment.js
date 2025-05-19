@@ -6,6 +6,12 @@ import gsap from "gsap"
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { FiMoreVertical } from "react-icons/fi"
+import { useSelector } from "react-redux"
+
+function useDarkMode() {
+  const skin = useSelector(state => state.layout?.skin)
+  return skin === "dark"
+}
 
 function AnimatedModal({ isOpen, children, ...props }) {
   const modalRef = useRef()
@@ -26,6 +32,7 @@ function AnimatedModal({ isOpen, children, ...props }) {
 }
 
 export default function Comment() {
+  const darkMode = useDarkMode()
   const [page, setPage] = useState(1)
   const rowsRef = useRef([])
   const [dropdownOpen, setDropdownOpen] = useState(null)
@@ -154,28 +161,57 @@ export default function Comment() {
     onMouseUp: e => gsap.to(e.currentTarget, { scale: 1, duration: 0.1 }),
   }
 
+  // استایل‌های دارک‌مد
+  const darkBox = {
+    background: "linear-gradient(135deg, #23272b 60%, #18191a 100%)",
+    color: "#e4e6eb",
+    borderRadius: 24,
+    boxShadow: "0 8px 32px #0008"
+  }
+  const darkTable = {
+    background: "#23272b",
+    color: "#e4e6eb",
+    borderRadius: 16,
+    minWidth: 900
+  }
+  const darkThead = {
+    background: "#18191a",
+    color: "#ffd666"
+  }
+  const darkTd = {
+    background: "#23272b",
+    color: "#e4e6eb"
+  }
+  const darkDropdown = {
+    background: "#23272b",
+    color: "#ffd666",
+    border: "1px solid #333"
+  }
+
   return (
     <div ref={containerRef} className="container py-4" style={{
       maxWidth: 1200,
       fontFamily: "Vazirmatn, Tahoma, Arial"
     }}>
-      <ToastContainer rtl position="top-center" />
+      <ToastContainer rtl position="top-center" theme={darkMode ? "dark" : "light"} />
       <h2
         ref={titleRef}
-        className="text-center mb-4 fw-bold text-primary"
+        className="text-center mb-4 fw-bold"
         style={{
           letterSpacing: 1.5,
-          fontSize: 32
+          fontSize: 32,
+          color: darkMode ? "#ffd666" : "#1890ff"
         }}
       >
         لیست کامنت‌ها
       </h2>
       <div
         ref={boxRef}
-        className="bg-white rounded-4 shadow-sm p-3 p-md-4"
-        style={{
-          overflowX: "auto",
-          overflowY: "visible"
+        className="rounded-4 shadow-sm p-3 p-md-4"
+        style={darkMode ? darkBox : {
+          background: "#fff",
+          borderRadius: 24,
+          boxShadow: "0 8px 32px #0002"
         }}
       >
         {isLoading ? (
@@ -184,13 +220,13 @@ export default function Comment() {
           </div>
         ) : (
           <div className="table-responsive">
-            <Table bordered hover className="align-middle text-center" style={{
+            <Table bordered hover className="align-middle text-center" style={darkMode ? darkTable : {
               borderRadius: 16,
               fontSize: 16,
               minWidth: 900,
               background: "#f6faff"
             }}>
-              <thead className="table-light">
+              <thead style={darkMode ? darkThead : {}}>
                 <tr>
                   <th>#</th>
                   <th>نام کاربر</th>
@@ -210,7 +246,13 @@ export default function Comment() {
                     <tr
                       key={c.commentId}
                       ref={el => (rowsRef.current[i] = el)}
-                      style={{
+                      style={darkMode ? {
+                        background: i % 2 === 0 ? "#23272b" : "#23272b",
+                        transition: "background 0.3s, box-shadow 0.3s",
+                        borderRadius: 12,
+                        boxShadow: "0 2px 8px #0004",
+                        cursor: "pointer"
+                      } : {
                         background: i % 2 === 0 ? "#fafdff" : "#f3f7fa",
                         transition: "background 0.3s, box-shadow 0.3s",
                         borderRadius: 12,
@@ -218,27 +260,27 @@ export default function Comment() {
                         cursor: "pointer"
                       }}
                       onMouseEnter={e => {
-                        gsap.to(e.currentTarget, { background: "#e6f7ff", scale: 1.01, boxShadow: "0 4px 16px #91d5ff55", duration: 0.2 })
+                        gsap.to(e.currentTarget, { background: darkMode ? "#18191a" : "#e6f7ff", scale: 1.01, boxShadow: darkMode ? "0 4px 16px #ffd66633" : "0 4px 16px #91d5ff55", duration: 0.2 })
                       }}
                       onMouseLeave={e => {
-                        gsap.to(e.currentTarget, { background: i % 2 === 0 ? "#fafdff" : "#f3f7fa", scale: 1, boxShadow: "0 2px 8px rgba(24,144,255,0.04)", duration: 0.2 })
+                        gsap.to(e.currentTarget, { background: darkMode ? "#23272b" : (i % 2 === 0 ? "#fafdff" : "#f3f7fa"), scale: 1, boxShadow: darkMode ? "0 2px 8px #0004" : "0 2px 8px rgba(24,144,255,0.04)", duration: 0.2 })
                       }}
                     >
                       <td style={{ fontWeight: "bold" }}>{(page - 1) * 10 + i + 1}</td>
                       <td>
                         <span
-                          style={{ fontWeight: "bold", cursor: "pointer", transition: "color 0.2s" }}
+                          style={{ fontWeight: "bold", cursor: "pointer", transition: "color 0.2s", color: darkMode ? "#ffd666" : "#222" }}
                           onMouseEnter={e => gsap.to(e.currentTarget, { color: "#52c41a", scale: 1.08, duration: 0.2 })}
-                          onMouseLeave={e => gsap.to(e.currentTarget, { color: "#222", scale: 1, duration: 0.2 })}
+                          onMouseLeave={e => gsap.to(e.currentTarget, { color: darkMode ? "#ffd666" : "#222", scale: 1, duration: 0.2 })}
                         >
                           {c.userFullName}
                         </span>
                       </td>
                       <td>
                         <span
-                          style={{ fontWeight: "bold", cursor: "pointer", transition: "color 0.2s" }}
+                          style={{ fontWeight: "bold", cursor: "pointer", transition: "color 0.2s", color: darkMode ? "#ffd666" : "#222" }}
                           onMouseEnter={e => gsap.to(e.currentTarget, { color: "#1890ff", scale: 1.05, duration: 0.2 })}
-                          onMouseLeave={e => gsap.to(e.currentTarget, { color: "#222", scale: 1, duration: 0.2 })}
+                          onMouseLeave={e => gsap.to(e.currentTarget, { color: darkMode ? "#ffd666" : "#222", scale: 1, duration: 0.2 })}
                         >
                           {c.courseTitle}
                         </span>
@@ -248,13 +290,14 @@ export default function Comment() {
                           style={{
                             borderRadius: 8,
                             padding: "8px 14px",
-                            background: "#f7f7fa",
+                            background: darkMode ? "#18191a" : "#f7f7fa",
                             minWidth: 120,
                             fontSize: 15,
+                            color: darkMode ? "#ffd666" : "#222",
                             transition: "background 0.2s"
                           }}
-                          onMouseEnter={e => gsap.to(e.currentTarget, { background: "#f6ffed", scale: 1.04, duration: 0.2 })}
-                          onMouseLeave={e => gsap.to(e.currentTarget, { background: "#f7f7fa", scale: 1, duration: 0.2 })}
+                          onMouseEnter={e => gsap.to(e.currentTarget, { background: darkMode ? "#23272b" : "#f6ffed", scale: 1.04, duration: 0.2 })}
+                          onMouseLeave={e => gsap.to(e.currentTarget, { background: darkMode ? "#18191a" : "#f7f7fa", scale: 1, duration: 0.2 })}
                         >
                           {c.describe}
                         </div>
@@ -267,18 +310,18 @@ export default function Comment() {
                       </td>
                       <td>
                         <span
-                          style={{ fontWeight: "bold", transition: "color 0.2s" }}
+                          style={{ fontWeight: "bold", transition: "color 0.2s", color: darkMode ? "#ffd666" : "#222" }}
                           onMouseEnter={e => gsap.to(e.currentTarget, { color: "#52c41a", scale: 1.15, duration: 0.2 })}
-                          onMouseLeave={e => gsap.to(e.currentTarget, { color: "#222", scale: 1, duration: 0.2 })}
+                          onMouseLeave={e => gsap.to(e.currentTarget, { color: darkMode ? "#ffd666" : "#222", scale: 1, duration: 0.2 })}
                         >
                           👍 {c.likeCount}
                         </span>
                       </td>
                       <td>
                         <span
-                          style={{ fontWeight: "bold", transition: "color 0.2s" }}
+                          style={{ fontWeight: "bold", transition: "color 0.2s", color: darkMode ? "#ffd666" : "#222" }}
                           onMouseEnter={e => gsap.to(e.currentTarget, { color: "#ff4d4f", scale: 1.15, duration: 0.2 })}
-                          onMouseLeave={e => gsap.to(e.currentTarget, { color: "#222", scale: 1, duration: 0.2 })}
+                          onMouseLeave={e => gsap.to(e.currentTarget, { color: darkMode ? "#ffd666" : "#222", scale: 1, duration: 0.2 })}
                         >
                           👎 {c.dislikeCount}
                         </span>
@@ -301,15 +344,16 @@ export default function Comment() {
                           onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.18, rotate: 18, duration: 0.18 })}
                           onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, rotate: 0, duration: 0.18 })}
                         >
-                          <FiMoreVertical size={26} style={{ cursor: "pointer" }} />
+                          <FiMoreVertical size={26} style={{ cursor: "pointer", color: darkMode ? "#ffd666" : "#222" }} />
                         </div>
                         {dropdownOpen === i && (
                           <div
                             ref={el => {
                               if (el) animateDropdown(el, dropdownOpen === i, isLast)
                             }}
-                            className="position-absolute bg-white border rounded shadow-sm"
+                            className="position-absolute border rounded shadow-sm"
                             style={{
+                              ...(darkMode ? darkDropdown : { background: "#fff", color: "#222" }),
                               left: "50%",
                               ...(isLast
                                 ? { bottom: 36 }
@@ -328,8 +372,8 @@ export default function Comment() {
                               className="py-2 px-3 text-danger fw-bold"
                               style={{ cursor: "pointer", borderBottom: "1px solid #eee" }}
                               onClick={() => { setDropdownOpen(null); openModal("delete", c) }}
-                              onMouseEnter={e => gsap.to(e.currentTarget, { background: "#fff1f0", scale: 1.05, duration: 0.15 })}
-                              onMouseLeave={e => gsap.to(e.currentTarget, { background: "#fff", scale: 1, duration: 0.15 })}
+                              onMouseEnter={e => gsap.to(e.currentTarget, { background: darkMode ? "#2a1a1a" : "#fff1f0", scale: 1.05, duration: 0.15 })}
+                              onMouseLeave={e => gsap.to(e.currentTarget, { background: darkMode ? "#23272b" : "#fff", scale: 1, duration: 0.15 })}
                             >
                               حذف
                             </div>
@@ -337,8 +381,8 @@ export default function Comment() {
                               className="py-2 px-3 text-success fw-bold"
                               style={{ cursor: "pointer", borderBottom: "1px solid #eee" }}
                               onClick={() => { setDropdownOpen(null); openModal("accept", c) }}
-                              onMouseEnter={e => gsap.to(e.currentTarget, { background: "#f6ffed", scale: 1.05, duration: 0.15 })}
-                              onMouseLeave={e => gsap.to(e.currentTarget, { background: "#fff", scale: 1, duration: 0.15 })}
+                              onMouseEnter={e => gsap.to(e.currentTarget, { background: darkMode ? "#1a2a1a" : "#f6ffed", scale: 1.05, duration: 0.15 })}
+                              onMouseLeave={e => gsap.to(e.currentTarget, { background: darkMode ? "#23272b" : "#fff", scale: 1, duration: 0.15 })}
                             >
                               تایید
                             </div>
@@ -346,8 +390,8 @@ export default function Comment() {
                               className="py-2 px-3 text-warning fw-bold"
                               style={{ cursor: "pointer" }}
                               onClick={() => { setDropdownOpen(null); openModal("reject", c) }}
-                              onMouseEnter={e => gsap.to(e.currentTarget, { background: "#fffbe6", scale: 1.05, duration: 0.15 })}
-                              onMouseLeave={e => gsap.to(e.currentTarget, { background: "#fff", scale: 1, duration: 0.15 })}
+                              onMouseEnter={e => gsap.to(e.currentTarget, { background: darkMode ? "#2a2a1a" : "#fffbe6", scale: 1.05, duration: 0.15 })}
+                              onMouseLeave={e => gsap.to(e.currentTarget, { background: darkMode ? "#23272b" : "#fff", scale: 1, duration: 0.15 })}
                             >
                               رد
                             </div>
@@ -363,30 +407,48 @@ export default function Comment() {
         )}
         <div className="d-flex justify-content-center align-items-center gap-3 mt-4 flex-wrap">
           <Button
-            color="primary"
+            color={darkMode ? "light" : "primary"}
             outline
             size="md"
             disabled={page === 1}
             onClick={() => setPage(p => Math.max(1, p - 1))}
-            style={{ minWidth: 100, fontWeight: "bold", fontSize: 18, borderRadius: 12 }}
+            style={{
+              minWidth: 100,
+              fontWeight: "bold",
+              fontSize: 18,
+              borderRadius: 12,
+              background: darkMode ? "#23272b" : undefined,
+              color: darkMode ? "#ffd666" : undefined,
+              borderColor: darkMode ? "#ffd666" : undefined
+            }}
             {...btnAnim}
           >
             قبلی
           </Button>
-          <span className="fw-bold px-3 py-2 bg-light rounded" style={{
+          <span className="fw-bold px-3 py-2 rounded" style={{
             fontSize: 18,
             minWidth: 120,
-            textAlign: "center"
+            textAlign: "center",
+            background: darkMode ? "#18191a" : "#f6faff",
+            color: darkMode ? "#ffd666" : "#222"
           }}>
             صفحه {page} از {Math.ceil((data?.total || 0) / 10) || 1}
           </span>
           <Button
-            color="primary"
+            color={darkMode ? "light" : "primary"}
             outline
             size="md"
             disabled={page >= Math.ceil((data?.total || 0) / 10)}
             onClick={() => setPage(p => p + 1)}
-            style={{ minWidth: 100, fontWeight: "bold", fontSize: 18, borderRadius: 12 }}
+            style={{
+              minWidth: 100,
+              fontWeight: "bold",
+              fontSize: 18,
+              borderRadius: 12,
+              background: darkMode ? "#23272b" : undefined,
+              color: darkMode ? "#ffd666" : undefined,
+              borderColor: darkMode ? "#ffd666" : undefined
+            }}
             {...btnAnim}
           >
             بعدی
@@ -394,7 +456,7 @@ export default function Comment() {
         </div>
       </div>
       <AnimatedModal isOpen={modal.open} toggle={closeModal} centered>
-        <ModalBody className="text-center fs-5">
+        <ModalBody className="text-center fs-5" style={darkMode ? { background: "#23272b", color: "#ffd666" } : {}}>
           {modal.type === "delete" && (
             <>آیا مطمئن هستید که می‌خواهید این کامنت را <span className="text-danger fw-bold">حذف</span> کنید؟</>
           )}
@@ -405,8 +467,8 @@ export default function Comment() {
             <>آیا مطمئن هستید که می‌خواهید این کامنت را <span className="text-warning fw-bold">رد</span> کنید؟</>
           )}
         </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={closeModal} {...btnAnim}>انصراف</Button>
+        <ModalFooter style={darkMode ? { background: "#18191a", borderTop: "1px solid #333" } : {}}>
+          <Button color={darkMode ? "secondary" : "secondary"} onClick={closeModal} {...btnAnim}>انصراف</Button>
           <Button
             color={
               modal.type === "delete" ? "danger" :
@@ -421,6 +483,23 @@ export default function Comment() {
           </Button>
         </ModalFooter>
       </AnimatedModal>
+      {darkMode && (
+        <style>
+          {`
+          body, .container {
+            background: #18191a !important;
+            color: #e4e6eb !important;
+          }
+          .table thead th, .table-light th {
+            background: #18191a !important;
+            color: #ffd666 !important;
+          }
+          .table-bordered {
+            border-color: #333 !important;
+          }
+          `}
+        </style>
+      )}
     </div>
   )
 }

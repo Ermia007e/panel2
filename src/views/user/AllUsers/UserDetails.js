@@ -7,13 +7,21 @@ import { toast } from 'react-hot-toast'
 import DeleteModal from './DeleteModal'
 import gsap from 'gsap'
 import classnames from 'classnames'
+import { useSelector } from 'react-redux'
 
 const MAX_DESC_LENGTH = 60 
 const MAX_FAV_COURSES = 4 
 
+// گرفتن حالت دارک از redux (مثل سایر بخش‌ها)
+const useDarkMode = () => {
+  const skin = useSelector(state => state.layout?.skin)
+  return skin === 'dark'
+}
+
 const UserDetails = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const darkMode = useDarkMode()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
@@ -158,16 +166,73 @@ const UserDetails = () => {
           value: {
             fontSize: '22px',
             fontWeight: 700,
-            color: '#7367f0',
+            color: darkMode ? '#ffd666' : '#7367f0',
             offsetY: 8,
             formatter: val => `${val}%`
           }
         }
       }
     },
-    colors: ['#7367f0']
+    colors: [darkMode ? '#ffd666' : '#7367f0']
   }
   const chartSeries = [percent]
+
+  // استایل‌های دارک‌مد
+  const darkCard = {
+    background: 'linear-gradient(135deg, #23272b 60%, #18191a 100%)',
+    color: '#e4e6eb',
+    boxShadow: '0 8px 32px #0008',
+    border: 'none'
+  }
+  const darkTable = {
+    background: '#23272b',
+    color: '#e4e6eb'
+  }
+  const darkTableHead = {
+    background: '#18191a',
+    color: '#ffd666'
+  }
+  const darkTableRow = idx => ({
+    background: idx % 2 === 0 ? '#23272b' : '#18191a',
+    color: '#e4e6eb'
+  })
+  const darkBtnEdit = {
+    background: '#ffd666',
+    color: '#222',
+    border: 'none',
+    borderRadius: 8,
+    padding: '8px 32px',
+    fontWeight: 'bold',
+    fontSize: 16,
+    cursor: 'pointer',
+    marginRight: 8,
+    boxShadow: '0 2px 8px #ffd66633',
+    transition: 'background 0.2s, color 0.2s, transform 0.2s'
+  }
+  const darkBtnDelete = {
+    background: '#a61d24',
+    color: '#fff',
+    border: 'none',
+    borderRadius: 8,
+    padding: '8px 32px',
+    fontWeight: 'bold',
+    fontSize: 16,
+    cursor: deleting ? 'not-allowed' : 'pointer',
+    opacity: deleting ? 0.7 : 1,
+    boxShadow: '0 2px 8px #a61d2433',
+    transition: 'background 0.2s, color 0.2s, transform 0.2s'
+  }
+  const darkTab = isActive => ({
+    cursor: 'pointer',
+    fontWeight: 700,
+    fontSize: 18,
+    background: isActive ? '#ffd666' : 'transparent',
+    color: isActive ? '#222' : '#e4e6eb',
+    borderRadius: 12,
+    margin: 2,
+    padding: '8px 24px',
+    border: 'none'
+  })
 
   return (
     <>
@@ -184,14 +249,18 @@ const UserDetails = () => {
           maxWidth: 1200,
           margin: '40px auto',
           borderRadius: 22,
-          boxShadow: '0 8px 32px #0002',
           overflow: 'hidden',
-          background: 'linear-gradient(135deg, #f8fafc 60%, #e3e8ff 100%)'
+          ...(darkMode ? darkCard : {
+            boxShadow: '0 8px 32px #0002',
+            background: 'linear-gradient(135deg, #f8fafc 60%, #e3e8ff 100%)'
+          })
         }}>
         <div style={{
           width: '100%',
           height: 150,
-          background: `url('https://sepehracademy.ir/assets/profile-bg.af77345a.jpg') center/cover no-repeat`
+          background: darkMode
+            ? `linear-gradient(90deg, #23272b 60%, #18191a 100%)`
+            : `url('https://sepehracademy.ir/assets/profile-bg.af77345a.jpg') center/cover no-repeat`
         }} />
         <CardBody style={{ marginTop: -70 }}>
           <Row className="mb-3">
@@ -213,14 +282,14 @@ const UserDetails = () => {
                 }}
               />
               <div style={{ marginTop: -40 }}>
-                <h3 className="mt-3 mb-1" style={{ fontWeight: 900, letterSpacing: 1 }}>{user.fName} {user.lName}</h3>
+                <h3 className="mt-3 mb-1" style={{ fontWeight: 900, letterSpacing: 1, color: darkMode ? "#ffd666" : undefined }}>{user.fName} {user.lName}</h3>
                 <Badge color={user.active ? 'success' : 'secondary'} pill style={{ fontSize: 17, padding: '8px 18px' }}>
                   {user.active ? 'فعال' : 'غیرفعال'}
                 </Badge>
               </div>
               <div ref={btnsRef} className="d-flex justify-content-center gap-2 mt-3">
                 <button
-                  style={{
+                  style={darkMode ? darkBtnEdit : {
                     background: '#ffe066',
                     color: '#333',
                     border: 'none',
@@ -238,7 +307,7 @@ const UserDetails = () => {
                   ویرایش
                 </button>
                 <button
-                  style={{
+                  style={darkMode ? darkBtnDelete : {
                     background: '#ff4d4f',
                     color: '#fff',
                     border: 'none',
@@ -297,19 +366,19 @@ const UserDetails = () => {
                 <b>درصد تکمیل پروفایل:</b>
                 <div ref={chartRef} className="d-flex flex-column align-items-center mt-2">
                   <Chart options={chartOptions} series={chartSeries} type="radialBar" height={170} width={170} />
-                  <Progress value={percent} color="primary" className="w-75 mt-3" style={{ height: 12, borderRadius: 8, transition: 'width 1s' }} />
-                  <div className="mt-1" style={{ fontWeight: 700, color: '#7367f0' }}>{percent}%</div>
+                  <Progress value={percent} color={darkMode ? "warning" : "primary"} className="w-75 mt-3" style={{ height: 12, borderRadius: 8, transition: 'width 1s', background: darkMode ? "#23272b" : undefined }} />
+                  <div className="mt-1" style={{ fontWeight: 700, color: darkMode ? "#ffd666" : "#7367f0" }}>{percent}%</div>
                 </div>
               </Col>
             </Row>
           </div>
           <div className="mt-5">
-            <Nav tabs className="mb-3 justify-content-center">
+            <Nav tabs className="mb-3 justify-content-center" style={darkMode ? { background: "#18191a", borderRadius: 16 } : {}}>
               <NavItem>
                 <NavLink
                   className={classnames({ active: activeTab === '1' })}
                   onClick={() => setActiveTab('1')}
-                  style={{ cursor: 'pointer', fontWeight: 700, fontSize: 18 }}
+                  style={darkMode ? darkTab(activeTab === '1') : { cursor: 'pointer', fontWeight: 700, fontSize: 18 }}
                 >
                   دوره‌های محبوب
                 </NavLink>
@@ -318,7 +387,7 @@ const UserDetails = () => {
                 <NavLink
                   className={classnames({ active: activeTab === '2' })}
                   onClick={() => setActiveTab('2')}
-                  style={{ cursor: 'pointer', fontWeight: 700, fontSize: 18 }}
+                  style={darkMode ? darkTab(activeTab === '2') : { cursor: 'pointer', fontWeight: 700, fontSize: 18 }}
                 >
                   رزروهای کاربر
                 </NavLink>
@@ -326,9 +395,9 @@ const UserDetails = () => {
             </Nav>
             <TabContent activeTab={activeTab}>
               <TabPane tabId="1">
-                <Table bordered responsive hover className="shadow-sm" style={{ borderRadius: 18, overflow: 'hidden', background: '#f9fafe' }}>
-                  <thead className="table-light">
-                    <tr style={{ fontWeight: 700, fontSize: 17, background: '#f1f3fa' }}>
+                <Table bordered responsive hover className="shadow-sm" style={darkMode ? { ...darkTable, borderRadius: 18, overflow: 'hidden' } : { borderRadius: 18, overflow: 'hidden', background: '#f9fafe' }}>
+                  <thead className="table-light" style={darkMode ? darkTableHead : {}}>
+                    <tr style={darkMode ? { fontWeight: 700, fontSize: 17, ...darkTableHead } : { fontWeight: 700, fontSize: 17, background: '#f1f3fa' }}>
                       <th style={{ width: 60, textAlign: 'center' }}>#</th>
                       <th>عنوان دوره</th>
                       <th>توضیحات</th>
@@ -346,13 +415,13 @@ const UserDetails = () => {
                       <tr
                         key={course.courseId || idx}
                         ref={el => favRowRefs.current[idx] = el}
-                        style={{
+                        style={darkMode ? darkTableRow(idx) : {
                           background: idx % 2 === 0 ? '#f7faff' : '#fff',
                           transition: 'background 0.2s'
                         }}
                       >
                         <td style={{ textAlign: 'center', fontWeight: 700 }}>{idx + 1}</td>
-                        <td style={{ fontWeight: 600, color: '#7367f0' }}>{course.title}</td>
+                        <td style={{ fontWeight: 600, color: darkMode ? "#ffd666" : "#7367f0" }}>{course.title}</td>
                         <td style={{ maxWidth: 300, whiteSpace: 'pre-line', fontSize: 15 }}>
                           {getShortDesc(course.describe)}
                           {course.describe && course.describe.length > MAX_DESC_LENGTH && (
@@ -369,9 +438,9 @@ const UserDetails = () => {
                               height: 40,
                               objectFit: 'cover',
                               borderRadius: 10,
-                              border: '2px solid #e3e8ff',
+                              border: darkMode ? '2px solid #ffd666' : '2px solid #e3e8ff',
                               boxShadow: '0 2px 8px #7367f022',
-                              background: '#fff',
+                              background: darkMode ? "#23272b" : "#fff",
                               transition: 'transform 0.2s'
                             }}
                             onError={e => { e.target.src = defaultCourseImg }}
@@ -387,7 +456,19 @@ const UserDetails = () => {
                         <td colSpan={5} className="text-center">
                           <button
                             onClick={() => setShowAllFav(true)}
-                            style={{
+                            style={darkMode ? {
+                              background: '#ffd666',
+                              color: '#222',
+                              border: 'none',
+                              borderRadius: 8,
+                              padding: '8px 32px',
+                              fontWeight: 'bold',
+                              fontSize: 16,
+                              cursor: 'pointer',
+                              margin: 8,
+                              boxShadow: '0 2px 8px #ffd66633',
+                              transition: 'background 0.2s, color 0.2s, transform 0.2s'
+                            } : {
                               background: '#7367f0',
                               color: '#fff',
                               border: 'none',
@@ -410,9 +491,9 @@ const UserDetails = () => {
                 </Table>
               </TabPane>
               <TabPane tabId="2">
-                <Table bordered responsive hover className="shadow-sm" style={{ borderRadius: 18, overflow: 'hidden', background: '#f9fafe' }}>
-                  <thead className="table-light">
-                    <tr style={{ fontWeight: 700, fontSize: 17, background: '#f1f3fa' }}>
+                <Table bordered responsive hover className="shadow-sm" style={darkMode ? { ...darkTable, borderRadius: 18, overflow: 'hidden' } : { borderRadius: 18, overflow: 'hidden', background: '#f9fafe' }}>
+                  <thead className="table-light" style={darkMode ? darkTableHead : {}}>
+                    <tr style={darkMode ? { fontWeight: 700, fontSize: 17, ...darkTableHead } : { fontWeight: 700, fontSize: 17, background: '#f1f3fa' }}>
                       <th style={{ width: 60, textAlign: 'center' }}>#</th>
                       <th>نام دوره</th>
                       <th>نام دانشجو</th>
@@ -430,7 +511,7 @@ const UserDetails = () => {
                       <tr
                         key={reserve.reserveId || idx}
                         ref={el => reserveRowRefs.current[idx] = el}
-                        style={{
+                        style={darkMode ? darkTableRow(idx) : {
                           background: idx % 2 === 0 ? '#f7faff' : '#fff',
                           transition: 'background 0.2s'
                         }}
@@ -462,6 +543,33 @@ const UserDetails = () => {
           </div>
         </CardBody>
       </Card>
+      {darkMode && (
+        <style>
+          {`
+          .table {
+            background: #23272b !important;
+            color: #e4e6eb !important;
+          }
+          .table thead {
+            background: #18191a !important;
+            color: #ffd666 !important;
+          }
+          .table tbody tr {
+            border-color: #333 !important;
+          }
+          .nav-tabs {
+            background: #18191a !important;
+            border-radius: 16px !important;
+            border: none !important;
+          }
+          .nav-tabs .nav-link.active {
+            background: #ffd666 !important;
+            color: #222 !important;
+            border-radius: 12px !important;
+          }
+          `}
+        </style>
+      )}
     </>
   )
 }
