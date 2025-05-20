@@ -38,6 +38,7 @@ const DashboardAnalytics = lazy(() => import('../../views/dashboard/analytics'))
 const DashboardEcommerce = lazy(() => import('../../views/dashboard/ecommerce'))
 const Sample = lazy(() => import("../../pages/Sample"));
 const AddNews = lazy(()=> import("../../views/AddNews/AddNews"))
+const Department = lazy(()=> import("../../views/Dpartment/Department"))
 
 // ** Merge Routes
 const Routes = [
@@ -49,6 +50,10 @@ const Routes = [
   {
     path: "/Dashboard",
     element: <Dashboard />,
+  },
+    {
+    path: "/Department",
+    element: <Department />,
   },
   {
   path: "/users/details/:id",
