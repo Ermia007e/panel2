@@ -1,22 +1,18 @@
 import React, { useRef, useState, useEffect } from "react"
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-import { Spinner, Button } from "reactstrap" // Button and Spinner from Reactstrap for loading state
+import { Spinner, Button } from "reactstrap" 
 
-// Assuming you have a Wizard component similar to the provided example
-import Wizard from "@components/wizard" // Adjust path as needed
+import Wizard from "@components/wizard" 
 
-// Steps for the form
 import PrimaryInfoStep from "./steps/PrimaryInfoStep"
 import SeoKeywordsStep from "./steps/SeoKeywordsStep"
 import CategorySliderStep from "./steps/CategorySliderStep"
 import ImageConfirmationStep from "./steps/ImageConfirmationStep"
 
-// API Calls
 import { AddNews as addNewsApi } from "../../services/api/AddNews/AddNews.api"
 import { getListNewsCategory } from "../../services/api/AddNews/getListNewsCategory.api"
 
-// Icons Imports (using react-feather as in the second example)
 import { FileText, User, List, Image } from "react-feather"
 
 const AddNews = () => {
@@ -25,9 +21,8 @@ const AddNews = () => {
   const [loading, setLoading] = useState(false)
   const [categories, setCategories] = useState([])
   const [catLoading, setCatLoading] = useState(false)
-  const [formData, setFormData] = useState({}) // State to hold form data across steps
+  const [formData, setFormData] = useState({}) 
 
-  // Fetch categories on component mount
   useEffect(() => {
     setCatLoading(true)
     getListNewsCategory()
@@ -47,7 +42,6 @@ const AddNews = () => {
       .finally(() => setCatLoading(false))
   }, [])
 
-  // Function to update form data from child steps
   const updateFormData = (stepData) => {
     setFormData(prevData => ({ ...prevData, ...stepData }));
   };
@@ -63,15 +57,14 @@ const AddNews = () => {
           newsFormData.append(key, value)
         }
       })
-      
-      // Simulate network delay
+    
       await new Promise(res => setTimeout(res, 700))
       
       const res = await addNewsApi(newsFormData)
       if (res?.data?.success) {
         toast.success("خبر با موفقیت ثبت شد!")
-        setFormData({}); // Reset form data
-        stepper.to(0); // Go back to the first step
+        setFormData({})
+        stepper.to(0); 
       } else if (res?.data?.ErrorMessage) {
         toast.error(Array.isArray(res.data.ErrorMessage) ? res.data.ErrorMessage.join(" / ") : res.data.ErrorMessage)
       } else {
@@ -99,7 +92,7 @@ const AddNews = () => {
       id: 'seo-keywords',
       title: 'سئو و کلیدواژه',
       subtitle: 'عنوان و توضیحات گوگل',
-      icon: <User size={18} />, // Using User icon for SEO, as an example. You can change this.
+      icon: <User size={18} />, 
       content: <SeoKeywordsStep stepper={stepper} formData={formData} updateFormData={updateFormData} />
     },
     {
@@ -122,11 +115,11 @@ const AddNews = () => {
     <div className='add-news-wizard-wrapper' style={{ padding: '32px 0' }}>
       <ToastContainer rtl position="top-center" theme="light" />
       <Wizard
-        type='modern-horizontal' // Using modern-horizontal type for horizontal stepper
+        type='modern-horizontal'
         ref={ref}
         steps={steps}
         options={{
-          linear: true // Set to true for strict linear progression (steps must be valid to proceed)
+          linear: true 
         }}
         instance={el => setStepper(el)}
       />
