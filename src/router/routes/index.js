@@ -40,6 +40,7 @@ const Sample = lazy(() => import("../../pages/Sample"));
 const AddNews = lazy(()=> import("../../views/AddNews/AddNews"))
 const Department = lazy(()=> import("../../views/Dpartment/Department"))
 const Building = lazy(()=>import("../../views/building/Building"))
+const Chat = lazy(()=>import("../../views/ChatWithTeachers/chat"))
 
 // ** Merge Routes
 const Routes = [
@@ -51,6 +52,10 @@ const Routes = [
   {
     path: "/Dashboard",
     element: <Dashboard />,
+  },
+    {
+    path: "/chat",
+    element: <Chat />,
   },
     {
     path: "/building",
