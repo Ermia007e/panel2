@@ -4,75 +4,78 @@ import * as Yup from "yup";
 import { Label, Row, Col, Input, Button, FormFeedback, Spinner, Alert } from 'reactstrap';
 import { ArrowLeft, CheckCircle, Image as ImageIcon, XCircle } from 'react-feather';
 
-const HUGGING_FACE_API_TOKEN = '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'
-const HUGGING_FACE_MODEL_URL = "https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5";
+const HUGGING_FACE_API_TOKEN = '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'; // توکن فعلی شما
+const API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0";
 
 const generateImageFromHuggingFace = async (prompt) => {
     try {
-        console.log("Calling Hugging Face Inference API directly with prompt:", prompt);
-        const response = await fetch(HUGGING_FACE_MODEL_URL, {
+        console.log("Sending request to:", API_URL);
+        console.log("Prompt:", prompt);
+
+        const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${HUGGING_FACE_API_TOKEN}`,
+                'Authorization': `Bearer ${HUGGING_FACE_API_TOKEN}`, // عین Postman
+                'Content-Type': 'application/json', // عین Postman
             },
-            body: JSON.stringify({ inputs: prompt }),
+            body: JSON.stringify({ inputs: prompt }), // عین Postman، بدون گزینه اضافی
         });
+
+        console.log("Response status:", response.status);
+        console.log("Response headers:", [...response.headers.entries()]);
 
         if (!response.ok) {
             const errorText = await response.text();
-            let errorMessage = `خطا از API هوش مصنوعی: ${response.status} ${response.statusText}`;
+            console.log("Raw error response:", errorText);
+            let errorMessage = `خطا از API: ${response.status} ${response.statusText}`;
             try {
                 const errorJson = JSON.parse(errorText);
                 if (errorJson.error) {
-                    errorMessage = `خطا از API هوش مصنوعی: ${errorJson.error}`;
+                    errorMessage = `خطا: ${errorJson.error}`;
+                } else if (errorJson.detail) {
+                    errorMessage = `جزئیات خطا: ${errorJson.detail}`;
                 }
             } catch (e) {
+                console.log("Error parsing JSON:", e);
+                errorMessage += ` - متن خام: ${errorText}`;
             }
             throw new Error(errorMessage);
         }
 
-        const imageBlob = await response.blob();
-        
-        if (imageBlob && imageBlob.type.startsWith('image/')) {
-            return URL.createObjectURL(imageBlob);
-        } else {
-            throw new Error("پاسخ از API هوش مصنوعی یک تصویر معتبر نبود.");
+        const contentType = response.headers.get('content-type');
+        console.log("Content-Type:", contentType);
+        if (contentType && contentType.includes('application/json')) {
+            const jsonResponse = await response.json();
+            throw new Error(`پاسخ JSON دریافت شد: ${JSON.stringify(jsonResponse)}`);
         }
+        if (!contentType || !contentType.includes('image')) {
+            throw new Error('پاسخ API تصویر نیست.');
+        }
+
+        const imageBlob = await response.blob();
+        console.log("Image blob received:", imageBlob);
+        return URL.createObjectURL(imageBlob);
     } catch (error) {
-        console.error("Error generating image from Hugging Face AI API:", error);
+        console.error("Full error details:", error);
         throw error;
     }
 };
 
-// --- Validation Schema ---
 const validationSchema = Yup.object({
     Image: Yup.mixed().nullable().test(
         "fileType",
-        "فقط فایل‌های تصویری (JPEG, PNG, GIF) مجاز هستند.",
-        value => {
-            if (!value) return true;
-            if (value instanceof File) {
-                return ["image/jpeg", "image/png", "image/gif"].includes(value.type);
-            }
-            return true;
-        }
+        "فقط فایل‌های JPEG، PNG یا GIF مجاز هستند.",
+        value => !value || (value instanceof File && ["image/jpeg", "image/png", "image/gif"].includes(value.type))
     ).test(
         "fileSize",
         "حجم فایل نمی‌تواند بیشتر از 5 مگابایت باشد.",
-        value => {
-            if (!value) return true;
-            if (value instanceof File) {
-                return value.size <= 5 * 1024 * 1024; // 5 MB
-            }
-            return true;
-        }
+        value => !value || (value instanceof File && value.size <= 5 * 1024 * 1024)
     ),
     aiPrompt: Yup.string()
         .max(500, "توضیحات AI نمی‌تواند بیشتر از 500 کاراکتر باشد.")
         .when('Image', {
             is: (Image) => !Image,
-            then: (schema) => schema.required("لطفاً برای ساخت تصویر AI توضیحات وارد کنید."),
+            then: (schema) => schema.required("لطفاً توضیحات برای ساخت تصویر وارد کنید."),
             otherwise: (schema) => schema.notRequired()
         })
 });
@@ -82,66 +85,49 @@ const ImageConfirmationStep = ({ stepper, formData, updateFormData, handleSubmit
     const [aiImageLoading, setAiImageLoading] = useState(false);
     const [aiError, setAiError] = useState(null);
     const [generatedImageUrl, setGeneratedImageUrl] = useState(() => {
-        if (formData.Image instanceof File) {
-            return URL.createObjectURL(formData.Image);
-        }
-        if (typeof formData.Image === 'string' && formData.Image.startsWith('http')) {
-            return formData.Image;
-        }
+        if (formData.Image instanceof File) return URL.createObjectURL(formData.Image);
         return null;
     });
 
-    const convertUrlToFile = async (url, filename, mimeType = 'image/png') => {
+    const convertUrlToFile = async (url, filename) => {
         try {
             const res = await fetch(url);
             const blob = await res.blob();
-            return new File([blob], filename, { type: mimeType || blob.type });
+            return new File([blob], filename, { type: 'image/png' });
         } catch (error) {
-            console.error("Error converting URL to File:", error);
-            throw new Error("تبدیل URL تصویر به فایل با شکست مواجه شد.");
+            throw new Error("خطا در تبدیل تصویر به فایل.");
         }
     };
 
-    // --- Handle AI Image Generation ---
     const handleGenerateAIImage = async (setFieldValue) => {
         if (!aiPrompt.trim()) {
-            setAiError("لطفاً توضیحات برای ساخت تصویر را وارد کنید.");
+            setAiError("لطفاً توضیحات برای ساخت تصویر وارد کنید.");
             return;
         }
 
         setAiImageLoading(true);
         setAiError(null);
-        if (generatedImageUrl && generatedImageUrl.startsWith('blob:')) {
-            URL.revokeObjectURL(generatedImageUrl);
-        }
+
+        if (generatedImageUrl && generatedImageUrl.startsWith('blob:')) URL.revokeObjectURL(generatedImageUrl);
         setGeneratedImageUrl(null);
 
         try {
             const imageUrl = await generateImageFromHuggingFace(aiPrompt);
-            
-            if (imageUrl) {
-                setGeneratedImageUrl(imageUrl);
-                const file = await convertUrlToFile(imageUrl, "ai_generated_image.png");
-                setFieldValue("Image", file);
-                updateFormData({ Image: file, aiPrompt: aiPrompt });
-            } else {
-                setAiError("تصویری از هوش مصنوعی دریافت نشد.");
-            }
+            const file = await convertUrlToFile(imageUrl, "ai_generated_image.png");
+            setGeneratedImageUrl(imageUrl);
+            setFieldValue("Image", file);
+            updateFormData({ Image: file, aiPrompt });
         } catch (error) {
-            console.error("خطا در ساخت تصویر با هوش مصنوعی:", error.message || error);
-            setAiError(`خطا در ساخت تصویر با هوش مصنوعی: ${error.message || 'خطای ناشناخته'}.`);
+            setAiError(`خطا: ${error.message || 'مشکل در تولید تصویر.'}`);
             setFieldValue("Image", null);
-            updateFormData({ Image: null, aiPrompt: aiPrompt });
+            updateFormData({ Image: null, aiPrompt });
         } finally {
             setAiImageLoading(false);
         }
     };
 
-    // --- Clear Image Function ---
     const clearImage = (setFieldValue) => {
-        if (generatedImageUrl && generatedImageUrl.startsWith('blob:')) {
-            URL.revokeObjectURL(generatedImageUrl);
-        }
+        if (generatedImageUrl && generatedImageUrl.startsWith('blob:')) URL.revokeObjectURL(generatedImageUrl);
         setFieldValue("Image", null);
         updateFormData({ Image: null, aiPrompt: "" });
         setGeneratedImageUrl(null);
@@ -152,15 +138,12 @@ const ImageConfirmationStep = ({ stepper, formData, updateFormData, handleSubmit
     return (
         <Fragment>
             <div className='content-header'>
-                <h5 className='mb-0'>تصویر و تایید</h5>
+                <h5 className='mb-0'>تصویر و تأیید</h5>
                 <small>تصویر خبر را انتخاب کرده یا با هوش مصنوعی بسازید و ثبت نهایی کنید.</small>
             </div>
             <Formik
-                initialValues={{
-                    Image: formData.Image || null,
-                    aiPrompt: aiPrompt
-                }}
-                enableReinitialize={true} 
+                initialValues={{ Image: formData.Image || null, aiPrompt }}
+                enableReinitialize={true}
                 validationSchema={validationSchema}
                 onSubmit={(values, { setSubmitting }) => {
                     handleSubmit();
@@ -170,7 +153,6 @@ const ImageConfirmationStep = ({ stepper, formData, updateFormData, handleSubmit
                 {({ values, setFieldValue, touched, errors, isSubmitting }) => (
                     <Form>
                         <Row>
-                            {/* --- Manual Image Upload Section --- */}
                             <Col md='12' className='mb-3'>
                                 <Label className='form-label'>انتخاب تصویر از دستگاه</Label>
                                 <Input
@@ -180,15 +162,14 @@ const ImageConfirmationStep = ({ stepper, formData, updateFormData, handleSubmit
                                     onChange={e => {
                                         const file = e.currentTarget.files[0];
                                         if (file) {
-                                            clearImage(setFieldValue); 
+                                            clearImage(setFieldValue);
                                             setFieldValue("Image", file);
                                             updateFormData({ Image: file });
-                                        } else {
-                                            clearImage(setFieldValue);
+                                            setGeneratedImageUrl(URL.createObjectURL(file));
                                         }
                                     }}
                                     invalid={touched.Image && !!errors.Image}
-                                    disabled={aiImageLoading || (!!generatedImageUrl && typeof values.Image === 'string')}
+                                    disabled={aiImageLoading}
                                 />
                                 <ErrorMessage name="Image" component={FormFeedback} />
                             </Col>
@@ -205,91 +186,66 @@ const ImageConfirmationStep = ({ stepper, formData, updateFormData, handleSubmit
                                     type="textarea"
                                     rows="3"
                                     name="aiPrompt"
-                                    placeholder="توضیحات خود را برای ساخت تصویر وارد کنید (مثال: 'گربه‌ای در حال خواندن کتاب در فضا')"
+                                    placeholder="توضیحات خود را برای ساخت تصویر وارد کنید (مثال: 'cats and dogs')"
                                     value={aiPrompt}
-                                    onChange={e => {
-                                        setAiPrompt(e.target.value);
-                                        setAiError(null);
-                                    }}
-                                    disabled={!!values.Image && values.Image instanceof File || aiImageLoading}
+                                    onChange={e => setAiPrompt(e.target.value)}
+                                    disabled={aiImageLoading || (values.Image instanceof File)}
                                     invalid={touched.aiPrompt && !!errors.aiPrompt}
                                 />
                                 <ErrorMessage name="aiPrompt" component={FormFeedback} />
                                 {aiError && <Alert color="danger" className="mt-2 p-2">{aiError}</Alert>}
-                                <Button 
-                                    color='info' 
-                                    className='mt-2 d-flex align-items-center' 
+                                <Button
+                                    color='info'
+                                    className='mt-2 d-flex align-items-center'
                                     onClick={() => handleGenerateAIImage(setFieldValue)}
-                                    disabled={!aiPrompt.trim() || aiImageLoading || (!!values.Image && values.Image instanceof File)}
+                                    disabled={aiImageLoading || !aiPrompt.trim() || (values.Image instanceof File)}
                                 >
                                     {aiImageLoading ? <Spinner size="sm" className="me-2" /> : <ImageIcon size={14} className='me-2' />}
                                     {aiImageLoading ? "در حال ساخت تصویر..." : "ساخت تصویر با AI"}
                                 </Button>
                             </Col>
-
                             <Col md='12' className='mb-3'>
-                                {values.Image instanceof File && (
-                                    <div className="text-center mt-3 position-relative">
-                                        <img
-                                            src={URL.createObjectURL(values.Image)}
-                                            alt="پیش‌نمایش تصویر آپلود شده"
-                                            style={{
-                                                maxWidth: 220, maxHeight: 180, borderRadius: 18,
-                                                boxShadow: "0 2px 12px rgba(0,0,0,0.2)", border: "3px solid #ccc"
-                                            }}
-                                        />
-                                        <Button 
-                                            color="danger" 
-                                            className="btn-icon rounded-circle position-absolute top-0 end-0 m-2"
-                                            onClick={() => clearImage(setFieldValue)}
-                                            style={{ transform: "translate(25%, -25%)", zIndex: 1 }}
-                                        >
-                                            <XCircle size={18} />
-                                        </Button>
-                                        <small className="d-block mt-1 text-muted">تصویر انتخابی شما</small>
-                                    </div>
-                                )}
-
-                                {generatedImageUrl && typeof generatedImageUrl === 'string' && !(values.Image instanceof File) && (
+                                {generatedImageUrl && (
                                     <div className="text-center mt-3 position-relative">
                                         <img
                                             src={generatedImageUrl}
-                                            alt="پیش‌نمایش تصویر AI"
+                                            alt="پیش‌نمایش تصویر"
                                             style={{
                                                 maxWidth: 220, maxHeight: 180, borderRadius: 18,
                                                 boxShadow: "0 2px 12px rgba(0,0,0,0.2)", border: "3px solid #1890ff"
                                             }}
                                         />
-                                        <Button 
-                                            color="danger" 
+                                        <Button
+                                            color="danger"
                                             className="btn-icon rounded-circle position-absolute top-0 end-0 m-2"
                                             onClick={() => clearImage(setFieldValue)}
                                             style={{ transform: "translate(25%, -25%)", zIndex: 1 }}
                                         >
                                             <XCircle size={18} />
                                         </Button>
-                                        <small className="d-block mt-1 text-muted">تصویر تولید شده با هوش مصنوعی</small>
+                                        <small className="d-block mt-1 text-muted">
+                                            {values.Image instanceof File ? "تصویر انتخابی شما" : "تصویر تولید شده با AI"}
+                                        </small>
                                     </div>
                                 )}
                             </Col>
                         </Row>
-
                         <div className='d-flex justify-content-between'>
                             <Button color='primary' className='btn-prev' onClick={() => stepper.previous()}>
                                 <ArrowLeft size={14} className='align-middle me-sm-25 me-0'></ArrowLeft>
                                 <span className='align-middle d-sm-inline-block d-none'>قبلی</span>
                             </Button>
-                            <Button 
-                                color='success' 
-                                type='submit' 
-                                className='btn-submit' 
-                                disabled={loading || isSubmitting || (!values.Image)}
+                            <Button
+                                color='success'
+                                type='submit'
+                                className='btn-submit'
+                                disabled={loading || isSubmitting || !values.Image}
                             >
                                 {loading || isSubmitting ? <Spinner size="sm" /> : <><CheckCircle size={14} className='align-middle me-sm-25 me-0'></CheckCircle>
                                 <span className='align-middle d-sm-inline-block d-none'>ثبت خبر</span></>}
                             </Button>
                         </div>
-                    </Form>
+                    extensions</Form>
                 )}
             </Formik>
         </Fragment>
