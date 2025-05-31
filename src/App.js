@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import "./font.css"
 // ** Router Import
 import Router from "./router/Router";
+import { Toaster } from "react-hot-toast";
 const queryClient = new QueryClient();
 
 const App = () => {
