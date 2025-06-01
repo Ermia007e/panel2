@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { Label, Row, Col, Input, Button, FormFeedback, Spinner, Alert } from 'reactstrap';
 import { ArrowLeft, CheckCircle, Image as ImageIcon, XCircle } from 'react-feather';
 
-const HUGGING_FACE_API_TOKEN = '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'; // توکن فعلی شما
+const token = process.env.HUGGING_FACE_TOKEN;
 const API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0";
 
 const generateImageFromHuggingFace = async (prompt) => {
@@ -15,7 +15,7 @@ const generateImageFromHuggingFace = async (prompt) => {
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${HUGGING_FACE_API_TOKEN}`, // عین Postman
+                'Authorization': `Bearer ${token}`, // عین Postman
                 'Content-Type': 'application/json', // عین Postman
             },
             body: JSON.stringify({ inputs: prompt }), // عین Postman، بدون گزینه اضافی
