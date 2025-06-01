@@ -36,7 +36,7 @@ const UserDetails = lazy(() => import('../../views/user/AllUsers/UserDetails'))
 const Comment = lazy(() => import('../../views/Comment/Comment'))
 const DashboardAnalytics = lazy(() => import('../../views/dashboard/analytics'))
 const DashboardEcommerce = lazy(() => import('../../views/dashboard/ecommerce'))
-const Sample = lazy(() => import("../../pages/Sample"));
+const Sample = lazy(() => import("../../pages/Sample"));  
 
 // ** Merge Routes
 const Routes = [
