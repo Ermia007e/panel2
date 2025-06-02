@@ -1,9 +1,7 @@
 // Logo Import
 import logo from "@src/assets/images/logo/logo.svg";
 
-// You can customize the template with the help of this file
-
-//Template config options
+// Template config options
 const themeConfig = {
   app: {
     appName: "Bahr",
