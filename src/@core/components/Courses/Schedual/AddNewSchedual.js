@@ -39,6 +39,7 @@ const AddNewSchedual = ({ open, handleModal }) => {
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
   const { id } = useParams()
+  
   const { data: groupListList } = useQuery({
     queryKey: [
       "groupListList",

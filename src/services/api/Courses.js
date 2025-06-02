@@ -5,8 +5,7 @@ export const getCourses = async (PageNumber,SortingCol,SortingType) => {
     const response = await http.get(
       `/Course/CourseList?PageNumber=${PageNumber}&RowsOfPage=10${SortingCol ? `&SortingCol=${SortingCol}` :""}${SortingType ? `&SortType=${SortingType}` :""}&Query`
     );
-    console.log(response , "response")
-
+    
     return response;
   } catch (error) {
     throw error;

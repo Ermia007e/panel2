@@ -102,10 +102,12 @@ const DataTableWithButtons = () => {
       setSearchValue(value)
     }
   }
-
+  const { handlePageNumber } = useCourseStore();
   // ** Function to handle Pagination
   const handlePagination = page => {
     setCurrentPage(page.selected)
+    handlePageNumber(page.selected + 1);
+
   }
 
   //query
@@ -138,7 +140,7 @@ const DataTableWithButtons = () => {
       nextLabel=''
       forcePage={currentPage}
       onPageChange={page => handlePagination(page)}
-      pageCount={10}
+      pageCount={Math.ceil(courseList?.totalCount/10)}
       breakLabel='...'
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
@@ -237,7 +239,7 @@ const DataTableWithButtons = () => {
             pagination
             selectableRows
             columns={columns}
-            paginationPerPage={7}
+            paginationPerPage={10}
             className='react-dataTable'
             sortIcon={<ChevronDown size={10} />}
             paginationComponent={CustomPagination}
