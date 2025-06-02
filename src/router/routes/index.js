@@ -44,6 +44,19 @@ const DashboardAnalytics = lazy(() => import('../../views/dashboard/analytics'))
 const DashboardEcommerce = lazy(() => import('../../views/dashboard/ecommerce'))
 
 const Sample = lazy(() => import("../../pages/Sample"));
+const NewsList = lazy(() => import('../../@core/components/newsList/newsLists/NewsList'));
+const NewsDetails = lazy(() => import('../../@core/components/newsList/newsLists/details/NewsDetails'));
+const EditNews = lazy(() => import('../../@core/components/newsList/newsLists/edit-form/EditNews'));
+const AddNews = lazy(() => import('../../@core/components/newsList/addNews/AddNews'));
+const CategoryList = lazy(() => import('../../@core/components/newsList/category/CategoryList'));
+const AddCategory = lazy(() => import('../../@core/components/newsList/category/addCategory/AddCategory'));
+const EditCategory = lazy(() => import('../../@core/components/newsList/category/editCategory/EditCategory'));
+const Assistance = lazy(() => import('../../@core/components/assistanceWork/assistanceList/Assistance'));
+const AsistanceWork = lazy(() => import('../../@core/components/assistanceWork/assistanceWork/AsistanceWork'));
+const EditWork = lazy(() => import('../../@core/components/assistanceWork/assistanceWork/editForm/EditWork'));
+const Edit = lazy(() => import('../../@core/components/assistanceWork/assistanceList/editForm/Edit'));
+ 
+
 
 // ** Merge Routes
 const Routes = [
@@ -136,6 +149,50 @@ const Routes = [
     meta: {
       layout: "blank",
     },
+  },
+  {
+    path: "/NewsList",
+    element: <NewsList />,
+  },
+  {
+    path: "/NewsDetails/:detailId",
+    element: <NewsDetails/>,
+  },
+  {
+    path: "/EditNews/:editId",
+    element: <EditNews/>,
+  },
+  {
+    path: "/AddNews",
+    element: <AddNews />,
+  },
+  {
+    path: "/CategoryList",
+    element: <CategoryList />,
+  },
+  {
+    path: "/AddCategory",
+    element: <AddCategory />,
+  },
+  {
+    path: "/EditCategory/:categoryId",
+    element: <EditCategory />,
+  },
+  {
+    path: "/AssistanceList",
+    element: <Assistance />,
+  },
+  {
+    path: "/AsistanceWork",
+    element: <AsistanceWork />,
+  },
+  {
+    path: "/EditWork/:workId",
+    element: <EditWork/>,
+  },
+  {
+    path: "/Edit/:id",
+    element: <Edit/>,
   },
 ];
 
