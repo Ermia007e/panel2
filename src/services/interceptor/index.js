@@ -8,14 +8,14 @@ const instance = axios.create({
 });
 
 const onSuccess = (response) => {
-  return response;
+  return response.data;
 };
 
 const onError = (err) => {
   console.log(err);
 
 
-  if (err?.response.status === 401) 
+  if (err?.response?.status === 401) 
   
 
   return Promise.reject(err);

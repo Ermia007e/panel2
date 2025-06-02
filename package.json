@@ -16,7 +16,11 @@
     "@hookform/resolvers": "^2.8.10",
     "@popperjs/core": "^2.11.3",
     "@reduxjs/toolkit": "^1.2.5",
+
     "@xenova/transformers": "^2.17.2",
+
+    "@tanstack/react-query": "^5.76.1",
+
     "animate.css": "4.1.1",
     "apexcharts": "^3.35.2",
     "apexcharts-clevision": "^3.28.5",
@@ -64,6 +68,7 @@
     "react-data-table-component": "^7.5.2",
     "react-dom": "^18.2.0",
     "react-draft-wysiwyg": "^1.14.7",
+    "react-drag-drop-files": "^3.0.1",
     "react-dropzone": "^14.2.1",
     "react-feather": "~2.0.3",
     "react-flatpickr": "^3.10.12",
@@ -77,7 +82,7 @@
     "react-rating": "2.0.5",
     "react-redux": "^8.0.1",
     "react-router-dom": "^6.3.0",
-    "react-select": "^5.6.1",
+    "react-select": "^5.10.1",
     "react-shepherd": "^4.1.0",
     "react-slidedown": "^2.4.7",
     "react-sortablejs": "6.0.0",
@@ -96,6 +101,7 @@
     "sweetalert2": "^11.4.14",
     "sweetalert2-react-content": "^5.0.0",
     "swiper": "^8.1.5",
+    "uuid": "^11.1.0",
     "wnumb": "1.2.0",
     "xlsx": "^0.18.5",
     "yup": "^0.32.11",
