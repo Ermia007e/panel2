@@ -1,4 +1,5 @@
-import { Mail, Home, Airplay, Circle } from "react-feather";
+import { Mail, Home, Airplay, Circle, List, User } from "react-feather";
+
 
 export default [
   {
@@ -21,15 +22,120 @@ export default [
       }
     ],
   },
+{
+  id: "Courses",
+  title: "دوره ها",
+  icon: <Home size={20} />,
+  navLink: "/Courses",
+  children: [
+    {
+      id: 'CoursesList',
+      title: 'لیست دوره ها',
+      icon: <Circle size={12} />,
+      navLink: '/Courses/CoursesList'
+    },
+    {
+      id: 'YourCoursesList',
+      title: 'لیست دوره های شما',
+      icon: <Circle size={12} />,
+      navLink: '/Courses/YourCoursesList'
+    },
+    {
+      id: 'YourReserveCoursesList',
+      title: 'لیست رزرو ',
+      icon: <Circle size={12} />,
+      navLink: '/Courses/YourReserveCoursesList'
+    },
+    {
+      id: 'CreateNewCourse',
+      title: 'ساخت دوره جدید ',
+      icon: <Circle size={12} />,
+      navLink: '/Courses/CreateNewCourse'
+    },
+        {
+      id: 'Schedual',
+      title: 'لیست زمانبندی ',
+      icon: <Circle size={12} />,
+      navLink: '/Courses/Schedual'
+    },
+  ],
+},
+
   {
+
     id: "secondPage",
     title: "کاربران",
     icon: <Mail size={20} />,
     navLink: "/second-page",
+
+    id: "news",
+    title: "اخبار و مقالات",
+    icon: <Airplay size={20} />,
+    navLink: "/News",
+    children: [
+      {
+        id: "newsList",
+        title: "لیست اخبار",
+        icon: <List size={20}/>,
+        navLink: "/NewsList",
+      },
+      {
+        id: "addNews",
+        title: "ایجاد اخبار جدید",
+        icon: <List size={20} />,
+        navLink: "/AddNews",
+      },
+      {
+        id: "categoryList",
+        title: "لیست دسته بندی",
+        icon: <List size={20} />,
+        navLink: "/CategoryList"
+      },
+    ],
+
   },
   {
-    id: "smaplePage",
-    title: "Sample Page",
-    icon: <Airplay size={20} />,
+    id: "assistans",
+    title: "استادیاران",
+    icon: <User size={20} />,
+    navLink: "/Assistance",
+    children: [
+      {
+        id: "assistansList",
+        title: "فهرست استادیاران",
+        icon: <User size={20} />,
+        navLink: "/AssistanceList",
+       
+      },
+      {
+        id: "assistansWork",
+        title: " وظایف استادیاران",
+        icon: <User size={20} />,
+        navLink: "/AsistanceWork",
+       
+      },
+    ]
+  },
+    
+  {
+    id: "Comments",
+    title: "نظرات",
+    icon: <Mail size={20} />,
+    navLink: "/Comments",
+          children: [
+    {
+      id: 'BlogsComment',
+      title: 'نظرات بلاگ ها',
+      icon: <Circle size={12} />,
+      navLink: '/Comments/BlogsComment'
+    },
+    {
+      id: 'CoursesCommnet',
+      title: 'نظرات دوره ها',
+      icon: <Circle size={12} />,
+      navLink: '/Comments/CoursesCommnet'
+    },
+
+  ]
   },
 ];
