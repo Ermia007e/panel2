@@ -1,14 +1,10 @@
-//** React Imports
 import { useEffect } from "react";
-
-// ** Store Imports
 import { useDispatch, useSelector } from "react-redux";
 import { handleLayout, handleLastLayout } from "@store/layout";
 
 export const useLayout = () => {
-  // ** Hooks
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.layout);
+  const store = useSelector((state) => state.layout || { layout: "vertical", lastLayout: "vertical" });
 
   const setLayout = (value) => {
     dispatch(handleLayout(value));
@@ -18,7 +14,7 @@ export const useLayout = () => {
     dispatch(handleLastLayout(value));
   };
 
-  if (window) {
+  if (typeof window !== "undefined") {
     const breakpoint = 1200;
 
     useEffect(() => {
@@ -26,7 +22,7 @@ export const useLayout = () => {
         setLayout("vertical");
       }
 
-      window.addEventListener("resize", () => {
+      const resizeHandler = () => {
         if (
           window.innerWidth <= breakpoint &&
           store.lastLayout !== "vertical" &&
@@ -40,14 +36,17 @@ export const useLayout = () => {
         ) {
           setLayout(store.lastLayout);
         }
-      });
-    }, [store.layout]);
+      };
+
+      window.addEventListener("resize", resizeHandler);
+      return () => window.removeEventListener("resize", resizeHandler);
+    }, [store.layout, store.lastLayout]);
   }
 
   return {
-    layout: store.layout,
+    layout: store.layout || "vertical",
     setLayout,
-    lastLayout: store.lastLayout,
+    lastLayout: store.lastLayout || "vertical",
     setLastLayout,
   };
 };

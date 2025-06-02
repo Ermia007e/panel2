@@ -2,7 +2,7 @@ import { useState } from "react"
 import Tabs from "./Tabs"
 
 
-export function AllUsers(){
+export function AllTeachers(){
   const [active, setActive] = useState('1')
 
   const toggleTab = tab => {
@@ -12,9 +12,7 @@ export function AllUsers(){
   }
 
 return(
-  <>
     <Tabs active={active} toggleTab={toggleTab} />
-    </>
 )
      
 }

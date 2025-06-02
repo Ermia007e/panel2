@@ -1,7 +1,7 @@
 // ** React Imports
 import { Fragment } from 'react'
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap'
-import { ActiveUsers } from './ActiveUsers'
+import { ActiveTeachers } from './ActiveTeachers'
 // ** Icons Imports
 import { User, Lock, Bookmark, Bell, Link } from 'react-feather'
 
@@ -14,14 +14,15 @@ const Tabs = ({ active, toggleTab}) => {
         <NavItem>
           <NavLink active={active === '1'} onClick={() => toggleTab('1')}>
             <User className='font-medium-3 me-50' />
-            <span className='fw-bold'>کاربران فعال</span>
+            <span className='fw-bold'>استادان فعال</span>
           </NavLink>
         </NavItem>
+
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId='1'>
           
-<ActiveUsers/>
+<ActiveTeachers/>
         </TabPane>
       </TabContent>
     </Fragment>

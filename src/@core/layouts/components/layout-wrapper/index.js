@@ -76,28 +76,27 @@ const LayoutWrapper = (props) => {
   }, [routeMeta]);
 
   return (
+  <div
+    className={classnames("app-content content overflow-hidden", {
+      [routeMeta ? routeMeta.className : ""]: routeMeta && routeMeta.className,
+      "show-overlay": navbarStore?.query?.length > 0,
+    })}
+  >
+    <div className="content-overlay"></div>
+    <div className="header-navbar-shadow" />
     <div
-      className={classnames("app-content content overflow-hidden", {
-        [routeMeta ? routeMeta.className : ""]:
-          routeMeta && routeMeta.className,
-        "show-overlay": navbarStore.query.length,
+      className={classnames({
+        "content-wrapper": routeMeta && !routeMeta.appLayout,
+        "content-area-wrapper": routeMeta && routeMeta.appLayout,
+        "container-xxl p-0": contentWidth === "boxed",
       })}
     >
-      <div className="content-overlay"></div>
-      <div className="header-navbar-shadow" />
-      <div
-        className={classnames({
-          "content-wrapper": routeMeta && !routeMeta.appLayout,
-          "content-area-wrapper": routeMeta && routeMeta.appLayout,
-          "container-xxl p-0": contentWidth === "boxed",
-        })}
-      >
-        <Tag {...(appLayoutCondition ? { className: "content-body" } : {})}>
-          {children}
-        </Tag>
-      </div>
+      <Tag {...(appLayoutCondition ? { className: "content-body" } : {})}>
+        {children}
+      </Tag>
     </div>
-  );
+  </div>
+);
 };
 
 export default memo(LayoutWrapper);

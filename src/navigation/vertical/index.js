@@ -62,6 +62,12 @@ export default [
 },
 
   {
+
+    id: "secondPage",
+    title: "کاربران",
+    icon: <Mail size={20} />,
+    navLink: "/second-page",
+
     id: "news",
     title: "اخبار و مقالات",
     icon: <Airplay size={20} />,
@@ -86,6 +92,7 @@ export default [
         navLink: "/CategoryList"
       },
     ],
+
   },
   {
     id: "assistans",

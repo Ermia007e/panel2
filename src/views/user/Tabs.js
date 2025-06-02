@@ -10,6 +10,7 @@ import { User, Lock, Bookmark, Bell, Link } from 'react-feather'
 // ** User Components
 
 import { AllUsers } from './AllUsers/AllUsers'
+import { AllTeachers } from './Teachers/AllTeachers'
 
 const UserTabs = ({ active, toggleTab }) => {
   return (
@@ -21,22 +22,11 @@ const UserTabs = ({ active, toggleTab }) => {
             <span className='fw-bold'>همه ی کاربران</span>
           </NavLink>
         </NavItem>
+
         <NavItem>
           <NavLink active={active === '2'} onClick={() => toggleTab('2')}>
             <User className='font-medium-3 me-50' />
-            <span className='fw-bold'>دانشجویان</span>
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink active={active === '3'} onClick={() => toggleTab('3')}>
-            <User className='font-medium-3 me-50' />
             <span className='fw-bold'>استادان</span>
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink active={active === '4'} onClick={() => toggleTab('4')}>
-            <User className='font-medium-3 me-50' />
-            <span className='fw-bold'>مدیران</span>
           </NavLink>
         </NavItem>
 
@@ -47,8 +37,10 @@ const UserTabs = ({ active, toggleTab }) => {
 
         </TabPane>
         <TabPane tabId='2'>
+          <AllTeachers/>
         </TabPane>
         <TabPane tabId='3'>
+          
         </TabPane>
         <TabPane tabId='4'>
         </TabPane>

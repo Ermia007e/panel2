@@ -40,14 +40,23 @@ const Login = lazy(() => import("../../pages/Login"));
 const Register = lazy(() => import("../../pages/Register"));
 const ForgotPassword = lazy(() => import("../../pages/ForgotPassword"));
 const Error = lazy(() => import("../../pages/Error"));
+const EditUser = lazy(() => import("../../views/user/AllUsers/EditUser"));
+const UserDetails = lazy(() => import('../../views/user/AllUsers/UserDetails'))
+const Comment = lazy(() => import('../../views/Comment/Comment'))
 const DashboardAnalytics = lazy(() => import('../../views/dashboard/analytics'))
 const DashboardEcommerce = lazy(() => import('../../views/dashboard/ecommerce'))
 
 const Sample = lazy(() => import("../../pages/Sample"));
+
+const AddNews = lazy(()=> import("../../views/AddNews/AddNews"))
+const Department = lazy(()=> import("../../views/Dpartment/Department"))
+const Building = lazy(()=>import("../../views/building/Building"))
+const Chat = lazy(()=>import("../../views/ChatWithTeachers/chat"))
+
 const NewsList = lazy(() => import('../../@core/components/newsList/newsLists/NewsList'));
 const NewsDetails = lazy(() => import('../../@core/components/newsList/newsLists/details/NewsDetails'));
 const EditNews = lazy(() => import('../../@core/components/newsList/newsLists/edit-form/EditNews'));
-const AddNews = lazy(() => import('../../@core/components/newsList/addNews/AddNews'));
+const AddNews1 = lazy(() => import('../../@core/components/newsList/addNews/AddNews'));
 const CategoryList = lazy(() => import('../../@core/components/newsList/category/CategoryList'));
 const AddCategory = lazy(() => import('../../@core/components/newsList/category/addCategory/AddCategory'));
 const EditCategory = lazy(() => import('../../@core/components/newsList/category/editCategory/EditCategory'));
@@ -56,7 +65,6 @@ const AsistanceWork = lazy(() => import('../../@core/components/assistanceWork/a
 const EditWork = lazy(() => import('../../@core/components/assistanceWork/assistanceWork/editForm/EditWork'));
 const Edit = lazy(() => import('../../@core/components/assistanceWork/assistanceList/editForm/Edit'));
  
-
 
 // ** Merge Routes
 const Routes = [
@@ -68,6 +76,34 @@ const Routes = [
   {
     path: "/Dashboard",
     element: <Dashboard />,
+  },
+    {
+    path: "/chat",
+    element: <Chat />,
+  },
+    {
+    path: "/building",
+    element: <Building />,
+  },
+    {
+    path: "/Department",
+    element: <Department />,
+  },
+  {
+  path: "/users/details/:id",
+  element: <UserDetails />
+},
+  {
+    path:"/users/edit/:id",
+    element:<EditUser />,
+  },
+    {
+    path:"/AddNews",
+    element:<AddNews />,
+  },
+    {
+    path:"/Comment",
+    element:<Comment />,
   },
   {
     path: '/dashboard/analytics',
@@ -163,8 +199,8 @@ const Routes = [
     element: <EditNews/>,
   },
   {
-    path: "/AddNews",
-    element: <AddNews />,
+    path: "/AddNews1",
+    element: <AddNews1 />,
   },
   {
     path: "/CategoryList",
