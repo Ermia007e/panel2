@@ -15,6 +15,7 @@ import UserProjectsList from './UserProjectsList'
 import SecurityTab from './GroupTab'
 import GroupTab from './GroupTab'
 import UserReserved from './UserReserved'
+import SocialGroup from './SocialGroup'
 
 const UserTabs = ({ active, toggleTab }) => {
   return (
@@ -44,6 +45,12 @@ const UserTabs = ({ active, toggleTab }) => {
             <span className='fw-bold'>کاربران رزرو شده</span>
           </NavLink>
         </NavItem>
+        <NavItem>
+          <NavLink active={active === '5'} onClick={() => toggleTab('5')}>
+            <Lock className='font-medium-3 me-50' />
+            <span className='fw-bold'>گروه های اجتماعی</span>
+          </NavLink>
+        </NavItem>
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId='1'>
@@ -60,6 +67,10 @@ const UserTabs = ({ active, toggleTab }) => {
 
         <TabPane tabId='4'>
           <UserReserved />
+        </TabPane>
+
+        <TabPane tabId='5'>
+          <SocialGroup />
         </TabPane>
 
       </TabContent>

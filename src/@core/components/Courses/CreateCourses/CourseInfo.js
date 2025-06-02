@@ -1,107 +1,86 @@
 // ** React Imports
 import { Fragment } from 'react'
 
-// ** Third Party Components
-import Select from 'react-select'
-import { ArrowLeft, ArrowRight } from 'react-feather'
-
-// ** Utils
-import { selectThemeColors } from '@utils'
-
 // ** Reactstrap Imports
-import { Label, Row, Col, Form, Input, Button } from 'reactstrap'
+import { Label, Row, Col, Form, Input } from 'reactstrap'
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
+import useCourseStore from '../../../../zustand/useCourseStore '
 
-const PersonalInfo = ({ stepper, type }) => {
-  const countryOptions = [
-    { value: 'UK', label: 'UK' },
-    { value: 'USA', label: 'USA' },
-    { value: 'Spain', label: 'Spain' },
-    { value: 'France', label: 'France' },
-    { value: 'Italy', label: 'Italy' },
-    { value: 'Australia', label: 'Australia' }
-  ]
+const PersonalInfo = ({ type }) => {
 
-  const languageOptions = [
-    { value: 'English', label: 'English' },
-    { value: 'French', label: 'French' },
-    { value: 'Spanish', label: 'Spanish' },
-    { value: 'Italian', label: 'Italian' },
-    { value: 'Japanese', label: 'Japanese' }
-  ]
+  const {
+    title,
+    cost,
+    capacity,
+    miniDescribe,
+    sessionNumber,
+    startTime,
+    endTime,
+    setTitle,
+    setCost,
+    setCapacity,
+    setSessionNumber,
+    setStartTime,
+    setEndTime,
+    setMiniDescribe,
+  } = useCourseStore()
 
   return (
     <Fragment>
       <div className='content-header'>
-        <h5 className='mb-0'>اضافه کردن اطلاعات دوره </h5>
+        <h3 className='py-2'>اضافه کردن اطلاعات دوره </h3>
       </div>
-      <Form onSubmit={e => e.preventDefault()}>
+      <Form>
         <Row>
           <Col md='6' className='mb-1'>
-            <Label className='form-label' for={`first-name-${type}`}>
+            <Label className='form-label' for={`Title-${type}`}>
               نام دوره
             </Label>
-            <Input type='text' name='first-name' id={`first-name-${type}`} placeholder='نام دوره را .ارد کنید' />
+            <Input type='text' name='Title' id={`Title-${type}`} value={title} onChange={(value) => { setTitle(value.target.value) }} placeholder='نام دوره را وارد کنید' />
           </Col>
           <Col md='6' className='mb-1'>
-            <Label className='form-label' for={`last-name-${type}`}>
+            <Label className='form-label' for={`Cost-${type}`}>
               قیمت دوره
             </Label>
-            <Input type='text' name='last-name' id={`last-name-${type}`} placeholder='قیمت دوره را وارد کنید' />
+            <Input type='number' name='Cost' id={`Cost-${type}`} value={cost} onChange={(value) => { setCost(value.target.value) }} placeholder='قیمت دوره را وارد کنید' />
           </Col>
         </Row>
         <Row>
           <Col md='6' className='mb-1'>
-            <Label className='form-label' for={`country-${type}`}>
+            <Label className='form-label' for={`Capacity-${type}`}>
               ظرفیت دوره
             </Label>
-            <Select
-              theme={selectThemeColors}
-              isClearable={false}
-              id={`country-${type}`}
-              className='react-select'
-              classNamePrefix='select'
-              options={countryOptions}
-              defaultValue={countryOptions[0]}
-            />
-          </Col>
-          <Col md='6' className='mb-1'>
-            <Label className='form-label' for={`language-${type}`}>
-            توضیحات مخصتر درباره دوره
-            </Label>
-            <Input type='text' name='first-name' id={`first-name-${type}`} placeholder='توضیحات مختصر را وارد کنید' />
+            <Input type='number' name='Capacity' id={`Capacity-${type}`} value={capacity} onChange={(value) => { setCapacity(value.target.value) }} placeholder='ظرفیت دوره را وارد کنید' />
 
           </Col>
           <Col md='6' className='mb-1'>
-            <Label className='form-label' for={`language-${type}`}>
-            تعداد جلسات دوره
+            <Label className='form-label' for={`MiniDescribe-${type}`}>
+              توضیحات مخصتر درباره دوره
             </Label>
-            <Select
-              isMulti
-              isClearable={false}
-              theme={selectThemeColors}
-              id={`language-${type}`}
-              options={languageOptions}
-              className='react-select'
-              classNamePrefix='select'
-            />
+            <Input type='text' name='MiniDescribe' id={`MiniDescribe-${type}`} value={miniDescribe} onChange={(value) => { setMiniDescribe(value.target.value) }} placeholder='توضیحات مختصر را وارد کنید' />
+
           </Col>
-                    <Col md='6' className='mb-1'>
-            <Label className='form-label' for={`language-${type}`}>
-            زمان برگذاری :            </Label>
-            <Select
-              isMulti
-              isClearable={false}
-              theme={selectThemeColors}
-              id={`language-${type}`}
-              options={languageOptions}
-              className='react-select'
-              classNamePrefix='select'
-            />
+          <Col xs={12} className='mb-1'>
+            <Label className='form-label' for={`SessionNumber-${type}`}>
+              تعداد جلسات دوره
+            </Label>
+            <Input type='number' name='SessionNumber' id={`SessionNumber-${type}`} value={sessionNumber} onChange={(value) => { setSessionNumber(value.target.value) }} placeholder='تعداد جلسات دوره را وارد کنید' />
+
+          </Col>
+          <Col md={6} className='mb-1'>
+            <Label className='form-label' for={`StartTime-${type}`}>
+              شروع دوره :            </Label>
+            <Input type='Date' name='StartTime' id={`StartTime-${type}`} value={startTime} onChange={(value) => { setStartTime(value.target.value) }} placeholder='تاریخ برگزاری دوره را وارد کنید' />
+          </Col>
+          <Col md={6}  className='mb-1'>
+            <Label className='form-label' for={`endTime-${type}`}>
+              پایان دوره :            </Label>
+            <Input type='Date' name='endTime' id={`endTime-${type}`} value={endTime} onChange={(value) => { setEndTime(value.target.value) }} placeholder='تاریخ اتمام دوره را وارد کنید' />
           </Col>
         </Row>
+
       </Form>
     </Fragment>
   )

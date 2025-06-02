@@ -17,6 +17,10 @@ import YourCoursesList from "../../pages/Courses/YourCoursesList";
 import UserCourseReserve from "../../pages/Courses/UserCourseReserve";
 import CreateNewCourses from "../../pages/Courses/CreateNewCourses";
 import CourseDeatil from "../../pages/Courses/Detail/CourseDetail";
+import BlogList from "../../pages/Blogs/BlogList";
+import CreateNewBlogs from "../../pages/Blogs/CreateNewBlogs";
+import BlogCategoryList from "../../pages/Blogs/BlogCategoryList";
+import Schedual from "../../pages/Schedual/Schedual";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -38,6 +42,7 @@ const ForgotPassword = lazy(() => import("../../pages/ForgotPassword"));
 const Error = lazy(() => import("../../pages/Error"));
 const DashboardAnalytics = lazy(() => import('../../views/dashboard/analytics'))
 const DashboardEcommerce = lazy(() => import('../../views/dashboard/ecommerce'))
+
 const Sample = lazy(() => import("../../pages/Sample"));
 
 // ** Merge Routes
@@ -60,15 +65,16 @@ const Routes = [
     element: <DashboardEcommerce />
   },
   {
-    path: "/dashboard/CoursesList",
+    path: "/Courses/CoursesList",
     element: <Courses />,
   },
+  
   {
-    path: "/dashboard/YourCoursesList",
+    path: "/Courses/YourCoursesList",
     element: <YourCoursesList />,
   },
   {
-    path: "/dashboard/YourReserveCoursesList",
+    path: "/Courses/YourReserveCoursesList",
     element: <UserCourseReserve />,
   },
   {
@@ -76,9 +82,26 @@ const Routes = [
     element: <CourseDeatil/>,
   },
   {
-    path: "/dashboard/CreateNewCourse",
+    path: "/Courses/CreateNewCourse",
     element: <CreateNewCourses />,
   },
+    {
+    path: "/Courses/Schedual",
+    element: <Schedual />,
+  },
+    {
+    path: "/Blogs/BlogList",
+    element: <BlogList />,
+  },
+  {
+    path: "/Blogs/CreateNewBlog",
+    element: <CreateNewBlogs/>,
+  },
+  {
+    path: "/Blogs/CategoryList",
+    element: <BlogCategoryList />,
+  },
+
   {
     path: "/login",
     element: <Login />,

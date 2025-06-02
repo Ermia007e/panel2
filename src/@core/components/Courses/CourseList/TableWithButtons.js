@@ -2,7 +2,7 @@
 import { Fragment, useState, forwardRef } from 'react'
 
 // ** Table Data & Columns
-import {  columns, data } from './data'
+import { columns, data } from './data'
 
 // ** Add New Modal Component
 // import AddNewModal from './AddNewModal'
@@ -31,6 +31,7 @@ import { useQuery } from 'react-query'
 import { getCourses } from '../../../../services/api/Courses'
 import AddNewModal from '../../Table/basic/AddNewModal'
 import { NavLink } from 'react-router-dom'
+import useCourseStore from '../../../../zustand/CourseSlice'
 
 // ** Bootstrap Checkbox Component
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -50,6 +51,14 @@ const DataTableWithButtons = () => {
   const handleModal = () => setModal(!modal)
 
   // ** Function to handle filter
+  //pagination
+  const {
+    PageNumber,
+    SortingCol,
+    SortingType,
+    SearchInput
+  } = useCourseStore()
+
   const handleFilter = e => {
     const value = e.target.value
     let updatedData = []
@@ -72,7 +81,7 @@ const DataTableWithButtons = () => {
           item.age.toLowerCase().startsWith(value.toLowerCase()) ||
           item.salary.toLowerCase().startsWith(value.toLowerCase()) ||
           item.start_date.toLowerCase().startsWith(value.toLowerCase()) ||
-          status[item.status].title.toLowerCase().startsWith(value.toLowerCase())
+          courseList?.courseDtos[item.courseList?.courseDtos].title.toLowerCase().startsWith(value.toLowerCase())
 
         const includes =
           item.full_name.toLowerCase().includes(value.toLowerCase()) ||
@@ -98,14 +107,29 @@ const DataTableWithButtons = () => {
   const handlePagination = page => {
     setCurrentPage(page.selected)
   }
-  
+
   //query
   const { data: courseList } = useQuery({
-    queryKey: ["coursesList"],
-    queryFn: getCourses,
+    queryKey: ["coursesList",
+      PageNumber,
+      SearchInput,
+      SortingCol,
+      SortingType,
+
+    ],
+    queryFn: () => {
+      const result = getCourses(
+        PageNumber,
+        SearchInput,
+        SortingCol,
+        SortingType,
+      )
+      return result;
+
+    }
   });
 
-  console.log(courseList , "courseList")
+  console.log(courseList, "courseList")
 
   // ** Custom Pagination
   const CustomPagination = () => (
@@ -173,7 +197,7 @@ const DataTableWithButtons = () => {
     link.setAttribute('href', encodeURI(csv))
     link.setAttribute('download', filename)
     link.click()
-  } 
+  }
 
 
 
@@ -183,40 +207,13 @@ const DataTableWithButtons = () => {
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h4'>همه ی دوره ها</CardTitle>
           <div className='d-flex mt-md-0 mt-1'>
-            <UncontrolledButtonDropdown>
-              <DropdownToggle color='secondary' caret outline>
-                <Share size={15} />
-                <span className='align-middle ms-50'>Export</span>
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem className='w-100'>
-                  <Printer size={15} />
-                  <span className='align-middle ms-50'>Print</span>
-                </DropdownItem>
-                <DropdownItem className='w-100' onClick={() => downloadCSV(data)}>
-                  <FileText size={15} />
-                  <span className='align-middle ms-50'>CSV</span>
-                </DropdownItem>
-                <DropdownItem className='w-100'>
-                  <Grid size={15} />
-                  <span className='align-middle ms-50'>Excel</span>
-                </DropdownItem>
-                <DropdownItem className='w-100'>
-                  <File size={15} />
-                  <span className='align-middle ms-50'>PDF</span>
-                </DropdownItem>
-                <DropdownItem className='w-100'>
-                  <Copy size={15} />
-                  <span className='align-middle ms-50'>Copy</span>
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledButtonDropdown>
-             <NavLink to={"/dashboard/CreateNewCourse"}>
-                    <Button className='ms-2' color='primary' onClick={handleModal}>
-               <Plus size={20} />
-               <span className='align-middle ms-50'>ساخت دوره ی جدید</span>
-             </Button>
-             </NavLink>
+
+            <NavLink to={"/dashboard/CreateNewCourse"}>
+              <Button className='ms-2' color='primary' onClick={handleModal}>
+                <Plus size={20} />
+                <span className='align-middle ms-50'>ساخت دوره ی جدید</span>
+              </Button>
+            </NavLink>
           </div>
         </CardHeader>
         <Row className='justify-content-end mx-0'>

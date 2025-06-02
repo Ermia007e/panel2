@@ -35,7 +35,6 @@ const UserDropdown = () => {
     queryFn: () => http.get("/SharePanel/GetProfileInfo"),
     
   });
-  console.log(userInfo);
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
       <DropdownToggle

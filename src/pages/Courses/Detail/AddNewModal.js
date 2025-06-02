@@ -10,13 +10,50 @@ import { Modal, Input, Label, Button, ModalHeader, ModalBody, InputGroup, InputG
 
 // ** Styles
 import '@styles/react/libs/flatpickr/flatpickr.scss'
+import { Creategroup } from '../../../services/api/Create-group/CreateNewGroup'
+import { useMutation, useQueryClient } from 'react-query'
+import { useParams } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import { formDataModifire } from '../../../utility/formDataModifire'
 
 const AddNewModal = ({ open, handleModal }) => {
+  const client = useQueryClient();
+  const [groupName, setgroupName] = useState('');
+  const [groupCapacity, setgroupCapacity] = useState('');
+
+
   // ** State
   const [Picker, setPicker] = useState(new Date())
 
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
+  const { courseId } = useParams()
+
+  const mutation = useMutation({
+    mutationFn: (body) => {
+      const res = Creategroup(body)
+      return res
+    },
+    onSuccess: () => {
+      toast.success(" گروه شما با موفقیت اضافه شد");
+      client.invalidateQueries({ queryKey: ["groupListList"] });
+    },
+    onError: () => {
+      toast.error("خطا");
+    },
+  });
+  const addgroup = async () => {
+    const obj = {
+      groupName,
+      courseId,
+      groupCapacity,
+    }
+    const formData = formDataModifire(obj);
+    mutation.mutate(formData);
+    console.log(formData);
+  };
+
+
 
   return (
     <Modal
@@ -32,64 +69,34 @@ const AddNewModal = ({ open, handleModal }) => {
       <ModalBody className='flex-grow-1'>
         <div className='mb-1'>
           <Label className='form-label' for='full-name'>
-            Full Name
+            نام گروه
           </Label>
           <InputGroup>
             <InputGroupText>
               <User size={15} />
             </InputGroupText>
-            <Input id='full-name' placeholder='Bruce Wayne' />
+            <Input id='full-name' name='GroupName' value={groupName} onChange={(value) => { setgroupName(value.target.value) }} placeholder='نام گروه را وارد کنید' />
           </InputGroup>
         </div>
         <div className='mb-1'>
           <Label className='form-label' for='post'>
-            Post
+            ظرفیت گروه
           </Label>
           <InputGroup>
             <InputGroupText>
               <Briefcase size={15} />
             </InputGroupText>
-            <Input id='post' placeholder='Web Developer' />
+            <Input id='post' name='GroupCapacity' value={groupCapacity} onChange={(value) => { setgroupCapacity(value.target.value) }} placeholder='ظرفیت گروه را وارد کنید' />
           </InputGroup>
         </div>
-        <div className='mb-1'>
-          <Label className='form-label' for='email'>
-            Email
-          </Label>
-          <InputGroup>
-            <InputGroupText>
-              <Mail size={15} />
-            </InputGroupText>
-            <Input type='email' id='email' placeholder='brucewayne@email.com' />
-          </InputGroup>
-        </div>
-        <div className='mb-1'>
-          <Label className='form-label' for='joining-date'>
-            Joining Date
-          </Label>
-          <InputGroup>
-            <InputGroupText>
-              <Calendar size={15} />
-            </InputGroupText>
-            <Flatpickr className='form-control' id='joining-date' value={Picker} onChange={date => setPicker(date)} />
-          </InputGroup>
-        </div>
-        <div className='mb-1'>
-          <Label className='form-label' for='salary'>
-            Salary
-          </Label>
-          <InputGroup>
-            <InputGroupText>
-              <DollarSign size={15} />
-            </InputGroupText>
-            <Input type='number' id='salary' />
-          </InputGroup>
-        </div>
-        <Button className='me-1' color='primary' onClick={handleModal}>
-          Submit
+
+        <Button className='me-1' color='primary' onClick={() => {
+          addgroup()
+        }}>
+          ثبت
         </Button>
         <Button color='secondary' onClick={handleModal} outline>
-          Cancel
+          لغو
         </Button>
       </ModalBody>
     </Modal>

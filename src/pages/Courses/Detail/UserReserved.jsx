@@ -27,7 +27,7 @@ export const columns = [
 
   {
     sortable: true,
-    minWidth: '300px',
+    minWidth: '200px',
     name: 'نام دوره',
     selector: row => row.courseName,
     cell: row => {
@@ -40,7 +40,7 @@ export const columns = [
   },
   {
     sortable: true,
-    minWidth: '300px',
+    minWidth: '200px',
     name: 'نام کاربر',
     selector: row => row.courseName,
     cell: row => {
@@ -54,7 +54,7 @@ export const columns = [
 
   {
     sortable: true,
-    minWidth: '300px',
+    minWidth: '200px',
     name: 'تاریخ رزرو',
     selector: row => row.reserverDate,
     cell: row => {

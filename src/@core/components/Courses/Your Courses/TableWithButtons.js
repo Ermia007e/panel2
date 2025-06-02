@@ -2,7 +2,7 @@
 import { Fragment, useState, forwardRef } from 'react'
 
 // ** Table Data & Columns
-import {  columns, data } from './data'
+import { columns, data } from './data'
 
 // ** Add New Modal Component
 // import AddNewModal from './AddNewModal'
@@ -98,14 +98,14 @@ const DataTableWithButtons = () => {
   const handlePagination = page => {
     setCurrentPage(page.selected)
   }
-  
+
   //query
   const { data: yourCourses } = useQuery({
     queryKey: ["yourCourses"],
     queryFn: getMyCourses,
   });
 
-  console.log(yourCourses , "yourCourses")
+  console.log(yourCourses, "yourCourses")
 
 
   // ** Custom Pagination
@@ -174,7 +174,7 @@ const DataTableWithButtons = () => {
     link.setAttribute('href', encodeURI(csv))
     link.setAttribute('download', filename)
     link.click()
-  } 
+  }
 
 
   return (
@@ -183,40 +183,12 @@ const DataTableWithButtons = () => {
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
           <CardTitle tag='h4'>همه ی دوره های شما</CardTitle>
           <div className='d-flex mt-md-0 mt-1'>
-            <UncontrolledButtonDropdown>
-              <DropdownToggle color='secondary' caret outline>
-                <Share size={15} />
-                <span className='align-middle ms-50'>Export</span>
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem className='w-100'>
-                  <Printer size={15} />
-                  <span className='align-middle ms-50'>Print</span>
-                </DropdownItem>
-                <DropdownItem className='w-100' onClick={() => downloadCSV(data)}>
-                  <FileText size={15} />
-                  <span className='align-middle ms-50'>CSV</span>
-                </DropdownItem>
-                <DropdownItem className='w-100'>
-                  <Grid size={15} />
-                  <span className='align-middle ms-50'>Excel</span>
-                </DropdownItem>
-                <DropdownItem className='w-100'>
-                  <File size={15} />
-                  <span className='align-middle ms-50'>PDF</span>
-                </DropdownItem>
-                <DropdownItem className='w-100'>
-                  <Copy size={15} />
-                  <span className='align-middle ms-50'>Copy</span>
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledButtonDropdown>
-              <NavLink to={"/dashboard/CreateNewCourse"}>
-                     <Button className='ms-2' color='primary' onClick={handleModal}>
+            <NavLink to={"/dashboard/CreateNewCourse"}>
+              <Button className='ms-2' color='primary' onClick={handleModal}>
                 <Plus size={20} />
                 <span className='align-middle ms-50'>ساخت دوره ی جدید</span>
               </Button>
-              </NavLink>
+            </NavLink>
           </div>
         </CardHeader>
         <Row className='justify-content-end mx-0'>
@@ -246,7 +218,7 @@ const DataTableWithButtons = () => {
             paginationComponent={CustomPagination}
             paginationDefaultPage={currentPage + 1}
             selectableRowsComponent={BootstrapCheckbox}
-            data={yourCourses?.listOfMyCourses}
+            data={yourCourses?.teacherCourseDtos}
           />
         </div>
       </Card>
