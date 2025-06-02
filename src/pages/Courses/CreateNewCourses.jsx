@@ -15,6 +15,8 @@ import useCourseStore from "../../zustand/useCourseStore ";
 import { formDataModifire } from "../../utility/formDataModifire";
 import { v4 as uuidv4 } from "uuid";
 import toast from "react-hot-toast";
+import generateUniqueString from '../../utility/generateUniqueString'
+
 
 const CreateNewCourses = () => {
   const {
@@ -78,6 +80,9 @@ const CreateNewCourses = () => {
     },
   });
 
+const uniqueStr = generateUniqueString();
+
+
   const createStep2 = () => {
     const obj = {
       title,
@@ -87,12 +92,12 @@ const CreateNewCourses = () => {
       capacity,
       sessionNumber,
       cost,
-      uniqeUrlString: "ljdaskj",
+      uniqeUrlString: uniqueStr,
       image,
       startTime,
       endTime,
-      googleSchema: "cdpisdjpci",
-      googleTitle: "feml;erl",
+      googleSchema: uniqueStr,
+      googleTitle: uniqueStr,
       CoursePrerequisiteId: uuidv4(),
       currentCoursePaymentNumber: Math.floor(Math.random() * 1000000),
       shortLink,

@@ -12,6 +12,8 @@ import dateModifier from '../../../../utility/dateModifier'
 import { useMutation, useQueryClient } from 'react-query'
 import { deleteCourse, expireCourses, isActiveCourses, isLockToRiase, isSchedualFroming } from '../../../../services/api/Courses'
 import toast from 'react-hot-toast'
+import { useState } from 'react'
+import EditeSchedual from './EditeSchedual'
 
 // ** Vars
 const states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary']
@@ -28,6 +30,8 @@ export let data
 
 // ** Expandable table component
 const ExpandableTable = ({ data }) => {
+
+
   return (
     <div className='expandable-content p-2'>
       <p>
@@ -169,6 +173,10 @@ export const columns = [
         },
       });
 
+      const [modal, setModal] = useState(false)
+
+      const handleModal = () => setModal(!modal)
+
       return (
         <div className='d-flex'>
           <UncontrolledDropdown>
@@ -218,7 +226,9 @@ export const columns = [
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
-          <Edit size={15} />
+          <Edit className='cursor-pointer' size={15} onClick={handleModal} />
+          <EditeSchedual  open={modal} handleModal={handleModal} />
+
         </div>
       )
     }

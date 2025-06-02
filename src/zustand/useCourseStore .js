@@ -55,6 +55,7 @@ const useCourseStore = create((set) => ({
     setTeacherId: (teacherId) => set({ teacherId }),
     setTremId: (tremId) => set({ tremId }),
     setTechId: (techId) => set({ techId }),
+    
 }))
 
 export default useCourseStore
