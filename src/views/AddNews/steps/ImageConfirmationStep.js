@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { Label, Row, Col, Input, Button, FormFeedback, Spinner, Alert } from 'reactstrap';
 import { ArrowLeft, CheckCircle, Image as ImageIcon, XCircle } from 'react-feather';
 
-const token = process.env.HUGGING_FACE_TOKEN;
+const token = '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';
 const API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0";
 
 const generateImageFromHuggingFace = async (prompt) => {
