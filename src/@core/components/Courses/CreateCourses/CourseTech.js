@@ -20,7 +20,7 @@ import useCourseStore from '../../../../zustand/useCourseStore '
 const CourseTech = ({ stepper, type }) => {
 
   const {
-    setTechs
+    setTechId
   } = useCourseStore()
 
   const { data: createCourse } = useQuery({
@@ -46,7 +46,7 @@ const CourseTech = ({ stepper, type }) => {
             isClearable={false}
             theme={selectThemeColors}
             options={techType}
-            onChange={(selected) => setTechs(selected?.value)}
+            onChange={(selected) => setTechId(selected?.value)}
             className='react-select'
             classNamePrefix='select'
             placeholder='انتخاب کنید'
