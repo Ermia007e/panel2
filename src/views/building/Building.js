@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { Table, Spinner, Badge, Button, Modal, ModalBody, ModalFooter, Input, Label, FormGroup } from "reactstrap";
+import { Card, CardBody, Spinner, Badge, Button, Modal, ModalBody, ModalFooter, Input, Label, FormGroup } from "reactstrap";
 import gsap from "gsap";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -32,7 +32,7 @@ function AnimatedModal({ isOpen, children, ...props }) {
     }
   }, [isOpen]);
   return (
-    <Modal isOpen={isOpen} innerRef={modalRef} {...props} style={{ zIndex: 10000 }}>
+    <Modal isOpen={isOpen} innerRef={modalRef} {...props} centered style={{ zIndex: 10000 }}>
       {children}
     </Modal>
   );
@@ -42,7 +42,7 @@ export default function Building() {
   const darkMode = useDarkMode();
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const rowsRef = useRef({});
+  const cardsRef = useRef({});
   const queryClient = useQueryClient();
 
   const [modal, setModal] = useState({ open: false, type: "", building: null });
@@ -54,7 +54,6 @@ export default function Building() {
   const titleRef = useRef();
   const boxRef = useRef();
 
-  // --- Data Fetching با react-query ---
   const itemsPerPage = 10;
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["buildings"],
@@ -62,7 +61,7 @@ export default function Building() {
       console.log(`API Call: Fetching ALL buildings from backend.`);
       const response = await fetchBuildingsApi({});
       console.log("API Raw Response Data (as received by Building.js):", response);
-      return response; 
+      return response || [];
     },
     onError: (err) => {
       toast.error("خطا در بارگذاری لیست ساختمان‌ها: " + err.message);
@@ -71,11 +70,9 @@ export default function Building() {
   });
 
   const allBuildings = Array.isArray(data) ? data : [];
-
   const filteredBuildings = allBuildings.filter(b =>
     b.buildingName && b.buildingName.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   const buildingsToDisplay = filteredBuildings.slice((page - 1) * itemsPerPage, page * itemsPerPage);
   const totalBuildings = filteredBuildings.length;
   const totalPages = Math.ceil(totalBuildings / itemsPerPage);
@@ -155,17 +152,15 @@ export default function Building() {
     gsap.fromTo(titleRef.current, { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.7, delay: 0.2, ease: "power3.out" });
     gsap.fromTo(boxRef.current, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.7, delay: 0.35, ease: "back.out(1.7)" });
   }, []);
+
   useEffect(() => {
     if (!isLoading && buildingsToDisplay.length) {
-      const currentRows = buildingsToDisplay.map(b => rowsRef.current[b.id]).filter(Boolean);
-      gsap.killTweensOf(currentRows);
-      gsap.fromTo(currentRows, { opacity: 0, y: 40, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, stagger: 0.07, ease: "power3.out" });
+      const currentCards = buildingsToDisplay.map(b => cardsRef.current[b.id]).filter(Boolean);
+      gsap.fromTo(currentCards, { opacity: 0, y: 40, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, stagger: 0.07, ease: "power3.out" });
     }
   }, [buildingsToDisplay, isLoading]);
 
-  const openModal = (type, building) => {
-    setModal({ open: true, type, building });
-  };
+  const openModal = (type, building) => setModal({ open: true, type, building });
   const closeModal = () => setModal({ open: false, type: "", building: null });
 
   const handleAction = () => {
@@ -234,24 +229,14 @@ export default function Building() {
   };
 
   const darkBox = { background: "linear-gradient(135deg, #23272b 60%, #18191a 100%)", color: "#e4e6eb", borderRadius: 24, boxShadow: "0 8px 32px #0008" };
-  const darkTable = {
-    background: "#23272b",
-    color: "#e4e6eb",
-    borderRadius: 16,
-    tableLayout: "fixed",
-    wordWrap: "break-word"
-  };
-  const darkThead = { background: "#18191a", color: "#ffd666" };
-
 
   return (
-    <div ref={containerRef} className="container py-4" style={{ maxWidth: 1200, fontFamily: "Vazirmatn, Tahoma, Arial" }}>
+    <div ref={containerRef} className="container py-4 px-3" style={{ fontFamily: "Vazirmatn, Tahoma, Arial" }}>
       <ToastContainer rtl position="top-center" theme={darkMode ? "dark" : "light"} />
       <h2 ref={titleRef} className="text-center mb-4 fw-bold" style={{ letterSpacing: 1.5, fontSize: 32, color: darkMode ? "#ffd666" : "#1890ff" }}>
         لیست ساختمان‌ها
       </h2>
-      <div ref={boxRef} className="rounded-4 shadow-sm p-3 p-md-4" style={darkMode ? darkBox : { background: "#fff", borderRadius: 24, boxShadow: "0 8px 32px #0002" }}>
-
+      <div ref={boxRef} className="card shadow-sm p-3 p-md-4" style={darkMode ? darkBox : { background: "#fff", borderRadius: 24, boxShadow: "0 8px 32px #0002" }}>
         <div className="d-flex justify-content-end mb-3">
           <Button
             color="success"
@@ -266,15 +251,15 @@ export default function Building() {
             افزودن ساختمان جدید
           </Button>
         </div>
-        <div className="mb-3 position-relative">
+        <div className="mb-4 position-relative">
           <Input
             type="text"
-            className="form-control"
+            className="form-control rounded-3"
             placeholder="جستجو بر اساس نام ساختمان..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              setPage(1); 
+              setPage(1);
             }}
             style={{ borderRadius: 12, paddingRight: "45px", paddingLeft: "15px", border: darkMode ? "1px solid #333" : "1px solid #ddd", background: darkMode ? "#18191a" : "#fff", color: darkMode ? "#e4e6eb" : "#222", fontSize: 16 }}
           />
@@ -288,71 +273,47 @@ export default function Building() {
         ) : isError ? (
           <div className="text-center py-5 text-danger">
             <p>خطا در بارگذاری داده‌ها: {error?.message || "مشکلی پیش آمد."}</p>
-            <p>لطفاً اتصال به اینترنت خود را بررسی کنید یا با پشتیبانی تماس بگیگرید.</p>
+            <p>لطفاً اتصال به اینترنت خود را بررسی کنید یا با پشتیبانی تماس بگیرید.</p>
           </div>
         ) : (
-          <div className="table-responsive">
-            <Table bordered hover className="align-middle text-center" style={darkMode ? darkTable : { borderRadius: 16, fontSize: 16, tableLayout: "fixed", wordWrap: "break-word", background: "#f6faff" }}>
-              <thead style={darkMode ? darkThead : {}}>
-                <tr>
-                  <th style={{ width: '5%' }}>#</th>
-                  <th style={{ width: '20%' }}>نام ساختمان</th>
-                  <th style={{ width: '15%' }}>تاریخ کار</th>
-                  <th style={{ width: '10%' }}>طبقه</th>
-                  <th style={{ width: '15%' }}>عرض جغرافیایی</th>
-                  <th style={{ width: '15%' }}>طول جغرافیایی</th>
-                  <th style={{ width: '10%' }}>وضعیت</th>
-                  <th style={{ width: '15%' }}>عملیات</th>
-                </tr>
-              </thead>
-              <tbody>
-                {buildingsToDisplay.length === 0 ? (
-                  <tr>
-                    <td colSpan="8" className="py-4 text-muted">
-                      {searchTerm ? "ساختمانی با این نام یافت نشد." : "داده‌ای برای نمایش وجود ندارد."}
-                    </td>
-                  </tr>
-                ) : (
-                  buildingsToDisplay.map((b, i) => {
-                    const globalIndex = (page - 1) * itemsPerPage + i;
-
-                    return (
-                      <tr
-                        key={b.id}
-                        ref={el => (rowsRef.current[b.id] = el)}
-                        style={darkMode ? { background: i % 2 === 0 ? "#23272b" : "#282c34", transition: "all 0.3s ease", boxShadow: "0 2px 8px #0004" } : { background: i % 2 === 0 ? "#fafdff" : "#f3f7fa", transition: "all 0.3s ease", boxShadow: "0 2px 8px rgba(24,144,255,0.04)" }}
-                        onMouseEnter={e => { gsap.to(e.currentTarget, { background: darkMode ? "#18191a" : "#e6f7ff", scale: 1.01, boxShadow: darkMode ? "0 4px 16px #ffd66633" : "0 4px 16px #91d5ff55", duration: 0.2 }) }}
-                        onMouseLeave={e => { gsap.to(e.currentTarget, { background: darkMode ? (i % 2 === 0 ? "#23272b" : "#282c34") : (i % 2 === 0 ? "#fafdff" : "#f3f7fa"), scale: 1, boxShadow: darkMode ? "0 2px 8px #0004" : "0 2px 8px rgba(24,144,255,0.04)", duration: 0.2 }) }}
-                      >
-                        <td style={{ fontWeight: "bold" }}>{globalIndex + 1}</td>
-                        <td>
-                          <span style={{ fontWeight: "bold", cursor: "pointer", transition: "color 0.2s", color: darkMode ? "#ffd666" : "#222" }} onMouseEnter={e => gsap.to(e.currentTarget, { color: "#52c41a", scale: 1.08, duration: 0.2 })} onMouseLeave={e => gsap.to(e.currentTarget, { color: darkMode ? "#ffd666" : "#222", scale: 1, duration: 0.2 })} >
-                            {b.buildingName}
+          <div className="row">
+            {buildingsToDisplay.length === 0 ? (
+              <div className="col-12 text-center py-4 text-muted">
+                {searchTerm ? "ساختمانی با این نام یافت نشد." : "داده‌ای برای نمایش وجود ندارد."}
+              </div>
+            ) : (
+              buildingsToDisplay.map((b, i) => {
+                const globalIndex = (page - 1) * itemsPerPage + i;
+                return (
+                  <div key={b.id} className="col-12 col-md-6 mb-3">
+                    <Card
+                      ref={el => (cardsRef.current[b.id] = el)}
+                      className="shadow-sm position-relative"
+                      style={{
+                        borderRadius: 16,
+                        background: darkMode ? (i % 2 === 0 ? "#23272b" : "#282c34") : (i % 2 === 0 ? "#fafdff" : "#f3f7fa"),
+                        transition: "all 0.3s ease",
+                        border: "none"
+                      }}
+                      onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.02, boxShadow: darkMode ? "0 8px 24px #ffd66633" : "0 8px 24px #91d5ff55", duration: 0.2 })}
+                      onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, boxShadow: "0 2px 8px rgba(0,0,0,0.1)", duration: 0.2 })}
+                    >
+                      <CardBody className="p-3">
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                          <span className="fw-bold" style={{ fontSize: 14, color: darkMode ? "#ffd666" : "#666" }}>
+                            #{globalIndex + 1}
                           </span>
-                        </td>
-                        <td>{new Date(b.workDate).toLocaleDateString("fa-IR")}</td>
-                        <td>{b.floor}</td>
-                        <td>{b.latitude}</td>
-                        <td>{b.longitude}</td>
-                        <td>
-                          {b.active
-                            ? <Badge color="success" style={{ fontSize: 15 }}>فعال</Badge>
-                            : <Badge color="danger" style={{ fontSize: 15 }}>غیرفعال</Badge>
-                          }
-                        </td>
-                        <td>
-                          <div className="d-flex justify-content-center gap-2">
+                          <div>
                             <Button
                               color="info"
                               size="sm"
-                              className="p-1"
+                              className="p-1 me-1"
                               onClick={() => handleEditBuilding(b)}
                               {...actionBtnAnim}
-                              style={{ borderRadius: "50%", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: darkMode ? "0 2px 8px rgba(0,255,255,0.3)" : "0 2px 8px rgba(0,0,0,0.1)" }}
+                              style={{ borderRadius: "50%", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: darkMode ? "0 2px 8px rgba(0,255,255,0.3)" : "0 2px 8px rgba(0,0,0,0.1)" }}
                             >
-                              <FiEdit size={18} />
+                              <FiEdit size={16} />
                             </Button>
-                            
                             {b.active ? (
                               <Button
                                 color="warning"
@@ -360,9 +321,9 @@ export default function Building() {
                                 className="p-1"
                                 onClick={() => openModal("reject", b)}
                                 {...actionBtnAnim}
-                                style={{ borderRadius: "50%", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: darkMode ? "0 2px 8px rgba(255,255,0,0.3)" : "0 2px 8px rgba(0,0,0,0.1)" }}
+                                style={{ borderRadius: "50%", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: darkMode ? "0 2px 8px rgba(255,255,0,0.3)" : "0 2px 8px rgba(0,0,0,0.1)" }}
                               >
-                                <FiXCircle size={18} />
+                                <FiXCircle size={16} />
                               </Button>
                             ) : (
                               <Button
@@ -371,19 +332,41 @@ export default function Building() {
                                 className="p-1"
                                 onClick={() => openModal("accept", b)}
                                 {...actionBtnAnim}
-                                style={{ borderRadius: "50%", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: darkMode ? "0 2px 8px rgba(0,255,0,0.3)" : "0 2px 8px rgba(0,0,0,0.1)" }}
+                                style={{ borderRadius: "50%", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: darkMode ? "0 2px 8px rgba(0,255,0,0.3)" : "0 2px 8px rgba(0,0,0,0.1)" }}
                               >
-                                <FiCheckCircle size={18} /> 
+                                <FiCheckCircle size={16} />
                               </Button>
                             )}
                           </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </Table>
+                        </div>
+                        <div className="mb-2">
+                          <span
+                            style={{ fontWeight: "bold", fontSize: 18, cursor: "pointer", transition: "color 0.2s", color: darkMode ? "#ffd666" : "#1890ff" }}
+                            onMouseEnter={e => gsap.to(e.currentTarget, { color: "#52c41a", scale: 1.05, duration: 0.2 })}
+                            onMouseLeave={e => gsap.to(e.currentTarget, { color: darkMode ? "#ffd666" : "#1890ff", scale: 1, duration: 0.2 })}
+                          >
+                            {b.buildingName}
+                          </span>
+                        </div>
+                        <div className="d-flex flex-column gap-1">
+                          <small className="text-muted">تاریخ کار: {new Date(b.workDate).toLocaleDateString("fa-IR")}</small>
+                          <small className="text-muted">طبقه: {b.floor}</small>
+                          <small className="text-muted">عرض جغرافیایی: {b.latitude}</small>
+                          <small className="text-muted">طول جغرافیایی: {b.longitude}</small>
+                          <div>
+                            {b.active ? (
+                              <Badge color="success" style={{ fontSize: 14 }}>فعال</Badge>
+                            ) : (
+                              <Badge color="danger" style={{ fontSize: 14 }}>غیرفعال</Badge>
+                            )}
+                          </div>
+                        </div>
+                      </CardBody>
+                    </Card>
+                  </div>
+                );
+              })
+            )}
           </div>
         )}
         <div className="d-flex justify-content-center align-items-center gap-3 mt-4 flex-wrap">
@@ -392,7 +375,7 @@ export default function Building() {
             outline
             size="md"
             disabled={page === 1}
-            onClick={() => { setPage(p => Math.max(1, p - 1)); }}
+            onClick={() => setPage(p => Math.max(1, p - 1))}
             style={{ minWidth: 100, fontWeight: "bold", fontSize: 18, borderRadius: 12, background: darkMode ? "#23272b" : undefined, color: darkMode ? "#ffd666" : undefined, borderColor: darkMode ? "#ffd666" : undefined }}
             {...btnAnim}
           >
@@ -406,7 +389,7 @@ export default function Building() {
             outline
             size="md"
             disabled={page >= totalPages || totalBuildings === 0}
-            onClick={() => { setPage(p => p + 1); }}
+            onClick={() => setPage(p => p + 1)}
             style={{ minWidth: 100, fontWeight: "bold", fontSize: 18, borderRadius: 12, background: darkMode ? "#23272b" : undefined, color: darkMode ? "#ffd666" : undefined, borderColor: darkMode ? "#ffd666" : undefined }}
             {...btnAnim}
           >
@@ -415,7 +398,7 @@ export default function Building() {
         </div>
       </div>
 
-      <AnimatedModal isOpen={modal.open} toggle={closeModal} centered>
+      <AnimatedModal isOpen={modal.open} toggle={closeModal}>
         <ModalBody className="text-center fs-5" style={darkMode ? { background: "#23272b", color: "#ffd666" } : {}}>
           {modal.type === "accept" && (
             <>آیا مطمئن هستید که می‌خواهید این ساختمان را <span className="text-success fw-bold">فعال</span> کنید؟</>
@@ -437,40 +420,40 @@ export default function Building() {
         </ModalFooter>
       </AnimatedModal>
 
-      <AnimatedModal isOpen={addModalOpen} toggle={() => setAddModalOpen(false)} centered>
+      <AnimatedModal isOpen={addModalOpen} toggle={() => setAddModalOpen(false)}>
         <ModalBody style={darkMode ? { background: "#23272b", color: "#ffd666" } : {}}>
           <h5 className="mb-4 text-center">افزودن ساختمان جدید</h5>
           <form onSubmit={handleAddBuildingSubmit}>
             <FormGroup className="mb-3">
-              <Label htmlFor="buildingName">نام ساختمان:</Label>
+              <Label for="buildingName">نام ساختمان:</Label>
               <Input
                 type="text" id="buildingName" name="buildingName" value={newBuilding.buildingName} onChange={handleAddInputChange} required
                 style={{ background: darkMode ? "#18191a" : "#fff", color: darkMode ? "#e4e6eb" : "#222", borderColor: darkMode ? "#333" : "#ddd" }}
               />
             </FormGroup>
             <FormGroup className="mb-3">
-              <Label htmlFor="workDate">تاریخ کار:</Label>
+              <Label for="workDate">تاریخ کار:</Label>
               <Input
                 type="date" id="workDate" name="workDate" value={newBuilding.workDate} onChange={handleAddInputChange} required
                 style={{ background: darkMode ? "#18191a" : "#fff", color: darkMode ? "#e4e6eb" : "#222", borderColor: darkMode ? "#333" : "#ddd" }}
               />
             </FormGroup>
             <FormGroup className="mb-3">
-              <Label htmlFor="floor">طبقه:</Label>
+              <Label for="floor">طبقه:</Label>
               <Input
                 type="number" id="floor" name="floor" value={newBuilding.floor} onChange={handleAddInputChange} required min="1"
                 style={{ background: darkMode ? "#18191a" : "#fff", color: darkMode ? "#e4e6eb" : "#222", borderColor: darkMode ? "#333" : "#ddd" }}
               />
             </FormGroup>
             <FormGroup className="mb-3">
-              <Label htmlFor="latitude">عرض جغرافیایی:</Label>
+              <Label for="latitude">عرض جغرافیایی:</Label>
               <Input
                 type="text" id="latitude" name="latitude" value={newBuilding.latitude} onChange={handleAddInputChange} required
                 style={{ background: darkMode ? "#18191a" : "#fff", color: darkMode ? "#e4e6eb" : "#222", borderColor: darkMode ? "#333" : "#ddd" }}
               />
             </FormGroup>
             <FormGroup className="mb-3">
-              <Label htmlFor="longitude">طول جغرافیایی:</Label>
+              <Label for="longitude">طول جغرافیایی:</Label>
               <Input
                 type="text" id="longitude" name="longitude" value={newBuilding.longitude} onChange={handleAddInputChange} required
                 style={{ background: darkMode ? "#18191a" : "#fff", color: darkMode ? "#e4e6eb" : "#222", borderColor: darkMode ? "#333" : "#ddd" }}
@@ -478,7 +461,7 @@ export default function Building() {
             </FormGroup>
             <FormGroup check className="mb-3">
               <Input type="checkbox" id="active" name="active" checked={newBuilding.active} onChange={handleAddInputChange} className="form-check-input" />
-              <Label htmlFor="active" check>فعال</Label>
+              <Label for="active" check>فعال</Label>
             </FormGroup>
             <ModalFooter style={darkMode ? { background: "#23272b", borderTop: "1px solid #333" } : {}}>
               <Button color={darkMode ? "secondary" : "secondary"} onClick={() => setAddModalOpen(false)} {...btnAnim}>انصراف</Button>
@@ -489,13 +472,14 @@ export default function Building() {
           </form>
         </ModalBody>
       </AnimatedModal>
-      <AnimatedModal isOpen={editModalOpen} toggle={() => setEditModalOpen(false)} centered>
+
+      <AnimatedModal isOpen={editModalOpen} toggle={() => setEditModalOpen(false)}>
         <ModalBody style={darkMode ? { background: "#23272b", color: "#ffd666" } : {}}>
           <h5 className="mb-4 text-center">ویرایش ساختمان</h5>
           {currentBuildingToEdit && (
             <form onSubmit={handleEditSubmit}>
               <FormGroup className="mb-3">
-                <Label htmlFor="editBuildingName">نام ساختمان:</Label>
+                <Label for="editBuildingName">نام ساختمان:</Label>
                 <Input
                   type="text" id="editBuildingName" name="buildingName"
                   value={currentBuildingToEdit.buildingName || ''} onChange={handleEditInputChange} required
@@ -503,15 +487,15 @@ export default function Building() {
                 />
               </FormGroup>
               <FormGroup className="mb-3">
-                <Label htmlFor="editWorkDate">تاریخ کار:</Label>
+                <Label for="editWorkDate">تاریخ کار:</Label>
                 <Input
                   type="date" id="editWorkDate" name="workDate"
-                  value={currentBuildingToEdit.workDate ? new Date(currentBuildingToEdit.workDate).toISOString().split('T')[0] : ''} onChange={handleEditInputChange} required
+                  value={currentBuildingToEdit.workDate || ''} onChange={handleEditInputChange} required
                   style={{ background: darkMode ? "#18191a" : "#fff", color: darkMode ? "#e4e6eb" : "#222", borderColor: darkMode ? "#333" : "#ddd" }}
                 />
               </FormGroup>
               <FormGroup className="mb-3">
-                <Label htmlFor="editFloor">طبقه:</Label>
+                <Label for="editFloor">طبقه:</Label>
                 <Input
                   type="number" id="editFloor" name="floor"
                   value={currentBuildingToEdit.floor || 1} onChange={handleEditInputChange} required min="1"
@@ -519,7 +503,7 @@ export default function Building() {
                 />
               </FormGroup>
               <FormGroup className="mb-3">
-                <Label htmlFor="editLatitude">عرض جغرافیایی:</Label>
+                <Label for="editLatitude">عرض جغرافیایی:</Label>
                 <Input
                   type="text" id="editLatitude" name="latitude"
                   value={currentBuildingToEdit.latitude || ''} onChange={handleEditInputChange} required
@@ -527,7 +511,7 @@ export default function Building() {
                 />
               </FormGroup>
               <FormGroup className="mb-3">
-                <Label htmlFor="editLongitude">طول جغرافیایی:</Label>
+                <Label for="editLongitude">طول جغرافیایی:</Label>
                 <Input
                   type="text" id="editLongitude" name="longitude"
                   value={currentBuildingToEdit.longitude || ''} onChange={handleEditInputChange} required
@@ -536,7 +520,7 @@ export default function Building() {
               </FormGroup>
               <FormGroup check className="mb-3">
                 <Input type="checkbox" id="editActive" name="active" checked={currentBuildingToEdit.active || false} onChange={handleEditInputChange} className="form-check-input" />
-                <Label htmlFor="editActive" check>فعال</Label>
+                <Label for="editActive" check>فعال</Label>
               </FormGroup>
               <ModalFooter style={darkMode ? { background: "#23272b", borderTop: "1px solid #333" } : {}}>
                 <Button color={darkMode ? "secondary" : "secondary"} onClick={() => setEditModalOpen(false)} {...btnAnim}>انصراف</Button>
@@ -549,20 +533,80 @@ export default function Building() {
         </ModalBody>
       </AnimatedModal>
 
-      {darkMode && (
-        <style>
-          {`
-          body, .container { background: #18191a !important; color: #e4e6eb !important; }
-          .table thead th, .table-light th { background: #18191a !important; color: #ffd666 !important; }
-          .table-bordered { border-color: #333 !important; }
-          .form-control, .form-select { background: ${darkMode ? "#18191a" : "#fff"} !important; color: ${darkMode ? "#e4e6eb" : "#222"} !important; border-color: ${darkMode ? "#333" : "#ddd"} !important; }
-          .form-control:focus { border-color: ${darkMode ? "#ffd666" : "#1890ff"} !important; box-shadow: 0 0 0 0.25rem ${darkMode ? "rgba(255,214,102,.25)" : "rgba(24,144,255,.25)"} !important; }
-          .form-check-input { background-color: ${darkMode ? "#333" : "#fff"} !important; border-color: ${darkMode ? "#555" : "#ccc"} !important; }
-          .form-check-input:checked { background-color: #1890ff !important; border-color: #1890ff !important; }
-          .form-check-label { color: ${darkMode ? "#e4e6eb" : "#222"} !important; }
-          `}
-        </style>
-      )}
+      <style>
+        {`
+          @media (min-width: 768px) {
+            .building-card {
+              display: none;
+            }
+          }
+          @media (max-width: 767px) {
+            .building-table {
+              display: none;
+            }
+            .building-card {
+              display: block;
+            }
+            .container {
+              padding: 0.5rem;
+            }
+            .btn {
+              font-size: 14px;
+              padding: 0.25rem 0.5rem;
+            }
+            .btn svg {
+              font-size: 16px;
+            }
+            .pagination-button {
+              min-width: 80px;
+              font-size: 16px;
+            }
+            .pagination-span {
+              font-size: 16px;
+              min-width: 100px;
+            }
+            h2 {
+              font-size: 24px;
+            }
+          }
+          @media (max-width: 576px) {
+            .btn {
+              font-size: 12px;
+              padding: 0.2rem 0.4rem;
+            }
+            .btn svg {
+              font-size: 14px;
+            }
+            .pagination-button {
+              min-width: 70px;
+              font-size: 14px;
+            }
+            .pagination-span {
+              font-size: 14px;
+              min-width: 90px;
+            }
+            h2 {
+              font-size: 20px;
+            }
+          }
+          ${darkMode &&
+            `
+            body, .container {
+              background: #18191a !important;
+              color: #e4e6eb !important;
+            }
+            .form-control {
+              background: #18191a !important;
+              color: #e4e6eb !important;
+              border-color: #333 !important;
+            }
+            .form-control:focus {
+              border-color: #ffd666 !important;
+              box-shadow: 0 0 0 0.25rem rgba(255,214,102,.25) !important;
+            }
+            `}
+        `}
+      </style>
     </div>
   );
 }
