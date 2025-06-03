@@ -11,6 +11,7 @@ const useCourseStore = create((set) => ({
   CostUp: "1000000000",
   CostDown: "0",
   CardView: true,
+  teacherId: null, 
 
   handlelevelName: (levelName) => set({ levelName }),
   handletechName: (techName) => set({ techName }),
@@ -22,6 +23,7 @@ const useCourseStore = create((set) => ({
   handleCostUp: (CostUp) => set({ CostUp }),
   handleCostDown: (CostDown) => set({ CostDown }),
   handleCardView: (CardView) => set({ CardView }),
+  setTeacherId: (id) => set({ teacherId: id }),
 
   handleClearAllFilters: () =>
     set({

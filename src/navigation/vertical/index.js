@@ -80,7 +80,7 @@ export default [
         navLink: "/NewsList",
       },
       {
-        id: "addNews",
+        id: "AddNews",
         title: "ایجاد اخبار جدید",
         icon: <List size={20} />,
         navLink: "/AddNews",
@@ -145,6 +145,12 @@ export default [
     navLink: '/Comment'
   },
 
+  {
+    id: 'SecondPage',
+    title: 'نظرات',
+    icon: <Circle size={12} />,
+    navLink: '/SecondPage'
+  },
   {
     id: "Comments",
     title: "نظرات",

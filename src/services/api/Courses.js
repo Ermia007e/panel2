@@ -129,10 +129,10 @@ export const DeleteComments = async (id) => {
 
 //CourseGroup
 
-export const getCourseGroup = async (courseId) => {
+export const getCourseGroupid = async (courseId,TeacherId) => {
   try {
-    console.log(courseId, "response")
-    const response = await http.get(`/CourseGroup/GetCourseGroup?TeacherId=20205&CourseId=e6a4b34e-c88f-ef11-b6e6-82fc07f68400`);
+    console.log(TeacherId, "teacherId")
+    const response = await http.get(`/CourseGroup/GetCourseGroup?TeacherId=${TeacherId}&CourseId=${courseId}`);
     console.log(response , "response")
     return response;
   } catch (error) {

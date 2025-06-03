@@ -15,9 +15,11 @@ import Avatar from '@components/avatar'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import { useState } from 'react'
 import AddNewModal from './AddNewModal'
-import { getgroupList } from '../../../services/api/Blogs'
+// import { getgroupList } from '../../../services/api/Blogs'
 import { useQuery } from 'react-query'
 import useCourseStore from '../../../zustand/CourseSlice'
+import { useParams } from 'react-router-dom'
+import { getCourseGroupid } from '../../../services/api/Courses'
 
 
 export const columns = [
@@ -78,9 +80,12 @@ export const columns = [
 
 
 
-const GroupTab = () => {
+const GroupTab = ({ courseDetail }) => {
   const [modal, setModal] = useState(false)
   const [currentPage, setCurrentPage] = useState(0)
+
+  // console.log(courseDetail.teacherId , "TeacherId")
+  const { courseId } = useParams()
 
   const {
     PageNumber,
@@ -91,6 +96,29 @@ const GroupTab = () => {
 
   const handleModal = () => setModal(!modal)
 
+  // const { data: groupListList } = useQuery({
+  //   queryKey: [
+  //     "groupListList",
+  //     PageNumber,
+  //     SearchInput,
+  //     SortingCol,
+  //     SortingType,
+  //   ],
+  //   queryFn: () => {
+  //     const result = getgroupList(
+  //       PageNumber,
+  //       SearchInput,
+  //       SortingCol,
+  //       SortingType,
+  //     )
+  //     return result;
+  //   }
+  // });
+
+
+
+  // const { teacherId } = useCourseStore();
+  // console.log(teacherId , "teacherId")
   const { data: groupListList } = useQuery({
     queryKey: [
       "groupListList",
@@ -111,7 +139,26 @@ const GroupTab = () => {
     }
   });
 
-  console.log(groupListList, "categoryList")
+  console.log(groupListList, "groupLislkrngdsng;qekflhboudfhgqpedhwr.tf gvjln jhpwfhugjhpunvhjnfuvgnoyudvhjyunkwsdguvntList")
+
+  const TeacherId = groupListList?.courseGroupDtos.find((e) => ({
+    value: e?.TeacherId,
+  }));
+
+  console.log(TeacherId, "TeacherId")
+
+  const { data: groupListid } = useQuery({
+    queryKey: ["groupListid", courseId, courseDetail.teacherId],
+    queryFn: () => {
+      const result = getCourseGroupid(
+        courseId, courseDetail.teacherId
+      );
+      return result;
+    },
+  });
+
+  console.log(groupListid, "groupList with id and techerid")
+
 
   const { handlePageNumber } = useCourseStore();
 
@@ -126,7 +173,7 @@ const GroupTab = () => {
       nextLabel=''
       forcePage={currentPage}
       onPageChange={page => handlePagination(page)}
-      pageCount={Math.ceil(groupListList.totalCount/10)}
+      pageCount={Math.ceil((groupListid?.length || 0) / 5)}
       breakLabel='...'
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
@@ -157,7 +204,7 @@ const GroupTab = () => {
           paginationComponent={CustomPagination}
           paginationDefaultPage={currentPage + 1}
           columns={columns}
-          data={groupListList?.courseGroupDtos}
+          data={groupListid || []}
           className='react-dataTable'
           sortIcon={<ChevronDown size={10} />}
         />

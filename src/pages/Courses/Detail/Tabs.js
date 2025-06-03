@@ -16,9 +16,24 @@ import SecurityTab from './GroupTab'
 import GroupTab from './GroupTab'
 import UserReserved from './UserReserved'
 import SocialGroup from './SocialGroup'
+import { getCourseDetails } from '../../../services/api/Courses'
+import { useQuery } from 'react-query'
+import { useParams } from 'react-router-dom'
 
 const UserTabs = ({ active, toggleTab }) => {
+    const { courseId } = useParams()
+
+
   
+  const { data: courseDetail } = useQuery({
+
+    queryKey: ["courseDetail"],
+    queryFn: async () => {
+      const result = await getCourseDetails(courseId)
+      return result
+    },
+  });
+  console.log(courseDetail, "courseDetail")
   return (
     <Fragment>
       <Nav pills className='mb-2'>
@@ -59,7 +74,7 @@ const UserTabs = ({ active, toggleTab }) => {
         </TabPane>
 
         <TabPane tabId='2'>
-          <GroupTab />
+          <GroupTab courseDetail={courseDetail} />
         </TabPane>
 
         <TabPane tabId='3'>

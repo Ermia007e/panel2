@@ -203,7 +203,7 @@ const Routes = [
     element: <EditNews />,
   },
   {
-    path: "/AddNews1",
+    path: "/AddNews",
     element: <AddNews1 />,
   },
   {
