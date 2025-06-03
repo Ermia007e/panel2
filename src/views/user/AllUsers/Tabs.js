@@ -17,19 +17,11 @@ const Tabs = ({ active, toggleTab}) => {
             <span className='fw-bold'>کاربران فعال</span>
           </NavLink>
         </NavItem>
-        <NavItem>
-          <NavLink active={active === '2'} onClick={() => toggleTab('2')}>
-            <Lock className='font-medium-3 me-50' />
-            <span className='fw-bold'>کاربران حذف شده </span>
-          </NavLink>
-        </NavItem>
       </Nav>
       <TabContent activeTab={active}>
         <TabPane tabId='1'>
           
 <ActiveUsers/>
-        </TabPane>
-        <TabPane tabId='2'>
         </TabPane>
       </TabContent>
     </Fragment>
