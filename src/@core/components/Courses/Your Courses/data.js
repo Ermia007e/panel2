@@ -7,6 +7,7 @@ import { MoreVertical, Edit, FileText, Archive, Trash } from 'react-feather'
 
 // ** Reactstrap Imports
 import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import { Link } from 'react-router-dom'
 
 import dateModifier from '../../../../utility/dateModifier'
 import { useMutation, useQueryClient } from 'react-query'
@@ -45,6 +46,34 @@ const ExpandableTable = ({ data }) => {
 
 // ** Table Common Column
 export const columns = [
+    {
+      minWidth: '120px',
+      sortable: row => row.full_name,
+      cell: row => (
+        <div className='d-flex align-items-center'>
+          {row.avatar === '' ? (
+            <Avatar color={`light-${states[row.status]}`} content={row.full_name} initials />
+          ) : (
+            <Avatar img={row.tumbImageAddress} />
+          )}
+          <div className='user-info text-truncate ms-1'>
+            <span className='d-block fw-bold text-truncate'>{row.tumbImageAddress}</span>
+            <small>{row.tumbImageAddress}</small>
+          </div>
+        </div>
+      )
+    },
+
+    {
+    name: 'نام گروه',
+    sortable: true,
+    minWidth: '100px',
+    cell: row => (
+      <Link to={`/course-details/${row.courseId}`} className='d-flex align-items-center'>
+        {row.title}
+      </Link>
+    )  },
+
   {
     name: 'مدرس',
     sortable: true,
@@ -78,17 +107,10 @@ export const columns = [
   },
 
   {
-    name: 'ترم',
+    name: 'نوع کلاس',
     sortable: true,
     minWidth: '100px',
-    selector: row => row.termName
-  },
-
-  {
-    name: 'نام گروه',
-    sortable: true,
-    minWidth: '100px',
-    selector: row => row.groupName
+    selector: row => row.classRoomName
   },
 
 

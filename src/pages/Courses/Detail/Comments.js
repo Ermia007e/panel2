@@ -24,7 +24,7 @@ export const columns = [
   
   {
     sortable: true,
-    minWidth: '300px',
+    minWidth: '200px',
     name: 'نام کاربر',
     selector: row => row.title,
     cell: row => {

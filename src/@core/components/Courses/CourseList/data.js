@@ -13,6 +13,8 @@ import { useMutation, useQueryClient } from 'react-query'
 import { deleteCourse, expireCourses, isActiveCourses } from '../../../../services/api/Courses'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
+import EditCourse from '../../../../pages/Courses/Detail/EditCourse'
+import { useState } from 'react'
 
 // ** Vars
 const states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary']
@@ -46,12 +48,22 @@ const ExpandableTable = ({ data }) => {
 
 // ** Table Common Column
 export const columns = [
+  // {
+  //   minWidth: '120px',
+  //   sortable: true,
+  //   sortable: row => row.title,
+
+  //   cell: row => (
+
+  //   )
+  // },
   {
-    name: 'عنوان ',
+    name: 'نام دوره ',
     minWidth: '150px',
     sortable: row => row.title,
     cell: row => (
       <Link to={`/course-details/${row.courseId}`} className='d-flex align-items-center'>
+        <Avatar img={row.tumbImageAddress} />
         {row.title}
       </Link>
     )
@@ -63,7 +75,7 @@ export const columns = [
     selector: row => row.fullName
   },
   {
-    name: 'تاریخ',
+    name: 'آخرین بروزرسانی',
     sortable: true,
     minWidth: '150px',
     selector: row => { return dateModifier(row.lastUpdate) }
@@ -181,6 +193,10 @@ export const columns = [
         },
       });
 
+      const [showModal, setShowModal] = useState(false);
+
+
+
       return (
         <div className='d-flex'>
           <UncontrolledDropdown>
@@ -190,9 +206,11 @@ export const columns = [
             <DropdownMenu end>
               <DropdownItem tag='a' href='/' className='w-100' onClick={e => e.preventDefault()}>
                 <FileText size={15} />
-                <span className='align-middle ms-50'>
-                  جزئیات
-                </span>
+                <Link to={`/course-details/${row.courseId}`}>
+                  <span className='align-middle ms-50'>
+                    جزئیات
+                  </span>
+                </Link>
               </DropdownItem>
               <DropdownItem
                 onClick={(e) => {
@@ -245,7 +263,9 @@ export const columns = [
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
-          <Edit size={15} />
+          <Edit size={15} onClick={() => setShowModal(true)} />
+          <EditCourse show={showModal} setShow={setShowModal} />
+
         </div>
       )
     }

@@ -7,14 +7,25 @@ import { Card, CardHeader, CardTitle, CardBody, Button, ListGroup, ListGroupItem
 // ** Third Party Imports
 import { useDropzone } from 'react-dropzone'
 import { FileText, X, DownloadCloud } from 'react-feather'
+import { useMutation, useQueryClient } from 'react-query'
+import { CreateCourse } from '../../../../services/api/Create-Course/CreateCourse'
+import toast from 'react-hot-toast'
+import useCourseStore from '../../../../zustand/useCourseStore '
 
 const FileUploaderMultiple = () => {
+    const {
+    tumbImageAddress,
+    setTumbImageAddress,
+  } = useCourseStore()
   // ** State
-  const [files, setFiles] = useState([])
+  const client = useQueryClient();
 
+  const [img, setimg] = useState([])
+
+  
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: acceptedFiles => {
-      setFiles([...files, ...acceptedFiles.map(file => Object.assign(file))])
+      setTumbImageAddress([...tumbImageAddress, ...acceptedFiles.map(file => Object.assign(file))])
     }
   })
 
@@ -26,10 +37,31 @@ const FileUploaderMultiple = () => {
     }
   }
 
+
+
+    const handleUploadImage = (tumbImageAddress) => {
+    if (!tumbImageAddress) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imgURL = reader.result?.toString() || "";
+      const imgElement = new Image();
+      imgElement.src = imgURL;
+      imgElement.onload = (e) => {
+        const { naturalWidth, naturalHeight } = e.currentTarget;
+        if (naturalHeight < 0 && naturalWidth < 0) {
+          toast.error("عکس شما نباید کمتر از ۲۵۰ پیکسل باشد");
+          return setTumbImageAddress("");
+        }
+        setTumbImageAddress(imgURL);
+      };
+    };
+    reader.readAsDataURL(tumbImageAddress);
+  };
+
   const handleRemoveFile = file => {
-    const uploadedFiles = files
+    const uploadedFiles = tumbImageAddress
     const filtered = uploadedFiles.filter(i => i.name !== file.name)
-    setFiles([...filtered])
+    setTumbImageAddress([...filtered])
   }
 
   const renderFileSize = size => {
@@ -40,7 +72,7 @@ const FileUploaderMultiple = () => {
     }
   }
 
-  const fileList = files.map((file, index) => (
+  const fileList = tumbImageAddress.map((file, index) => (
     <ListGroupItem key={`${file.name}-${index}`} className='d-flex align-items-center justify-content-between'>
       <div className='file-details d-flex align-items-center'>
         <div className='file-preview me-1'>{renderFilePreview(file)}</div>
@@ -56,7 +88,7 @@ const FileUploaderMultiple = () => {
   ))
 
   const handleRemoveAllFiles = () => {
-    setFiles([])
+    setTumbImageAddress([])
   }
 
   return (
@@ -72,18 +104,18 @@ const FileUploaderMultiple = () => {
             <h5>تصویر دوره را وارد کنید</h5>
             <p className='text-secondary'>
               <a href='/' onClick={e => e.preventDefault()}>
-              فایل را به اینجا بکشید{' '}              </a>{' '}
+                فایل را به اینجا بکشید{' '}              </a>{' '}
             </p>
           </div>
         </div>
-        {files.length ? (
+        {tumbImageAddress.length ? (
           <Fragment>
             <ListGroup className='my-2'>{fileList}</ListGroup>
             <div className='d-flex justify-content-end'>
               <Button className='me-1' color='danger' outline onClick={handleRemoveAllFiles}>
-                Remove All
+                Remove
               </Button>
-              <Button color='primary'>Upload Files</Button>
+              <Button color='primary' onClick={handleUploadImage}>Upload Files</Button>
             </div>
           </Fragment>
         ) : null}

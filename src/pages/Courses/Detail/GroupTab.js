@@ -4,105 +4,37 @@ import { Button, Card, CardHeader, Progress } from 'reactstrap'
 // ** Third Party Components
 import { ChevronDown, Plus } from 'react-feather'
 import DataTable from 'react-data-table-component'
+import ReactPaginate from 'react-paginate'
+
+
 
 // ** Custom Components
 import Avatar from '@components/avatar'
-
-// ** Label Images
-import xdLabel from '@src/assets/images/icons/brands/xd-label.png'
-import vueLabel from '@src/assets/images/icons/brands/vue-label.png'
-import htmlLabel from '@src/assets/images/icons/brands/html-label.png'
-import reactLabel from '@src/assets/images/icons/brands/react-label.png'
-import sketchLabel from '@src/assets/images/icons/brands/sketch-label.png'
 
 // ** Styles
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import { useState } from 'react'
 import AddNewModal from './AddNewModal'
+// import { getgroupList } from '../../../services/api/Blogs'
+import { useQuery } from 'react-query'
+import useCourseStore from '../../../zustand/CourseSlice'
+import { useParams } from 'react-router-dom'
+import { getCourseGroupid } from '../../../services/api/Courses'
 
-const projectsArr = [
-  {
-    progress: 60,
-    hours: '210:30h',
-    progressColor: 'info',
-    totalTasks: '233/240',
-    subtitle: 'React Project',
-    title: 'BGC eCommerce App',
-    img: reactLabel
-  },
-  {
-    hours: '89h',
-    progress: 15,
-    totalTasks: '9/50',
-    progressColor: 'danger',
-    subtitle: 'UI/UX Project',
-    title: 'Falcon Logo Design',
-    img: xdLabel
-  },
-  {
-    progress: 90,
-    hours: '129:45h',
-    totalTasks: '100/190',
-    progressColor: 'success',
-    subtitle: 'Vuejs Project',
-    title: 'Dashboard Design',
-    img: vueLabel
-  },
-  {
-    hours: '45h',
-    progress: 49,
-    totalTasks: '12/86',
-    progressColor: 'warning',
-    subtitle: 'iPhone Project',
-    title: 'Foodista mobile app',
-    img: sketchLabel
-  },
-
-  {
-    progress: 73,
-    hours: '67:10h',
-    totalTasks: '234/378',
-    progressColor: 'info',
-    subtitle: 'React Project',
-    title: 'Dojo React Project',
-    img: reactLabel
-  },
-  {
-    progress: 81,
-    hours: '108:39h',
-    totalTasks: '264/537',
-    title: 'HTML Project',
-    progressColor: 'success',
-    subtitle: 'Crypto Website',
-    img: htmlLabel
-  },
-  {
-    progress: 78,
-    hours: '88:19h',
-    totalTasks: '214/627',
-    progressColor: 'success',
-    subtitle: 'Vuejs Project',
-    title: 'Vue Admin template',
-    img: vueLabel
-  }
-]
 
 export const columns = [
-  
+
   {
     sortable: true,
-    minWidth: '300px',
+    minWidth: '200px',
     name: 'نام گروه',
-    selector: row => row.title,
+    selector: row => row.groupName,
     cell: row => {
       return (
         <div className='d-flex justify-content-left align-items-center'>
-          <div className='avatar-wrapper'>
-            <Avatar className='me-1' img={row.img} alt={row.title} imgWidth='32' />
-          </div>
           <div className='d-flex flex-column'>
-            <span className='text-truncate fw-bolder'>{row.title}</span>
-            <small className='text-muted'>{row.subtitle}</small>
+            <span className='text-truncate fw-bolder'>{row.groupName}</span>
+            <small className='text-muted'>{row.groupName}</small>
           </div>
         </div>
       )
@@ -110,47 +42,154 @@ export const columns = [
   },
   {
     name: 'ظرفیت دوره',
-    selector: row => row.totalTasks
+    selector: row => row.courseCapacity
+  },
+  {
+    name: 'ظرفیت گروه',
+    selector: row => row.groupCapacity
   },
   {
     name: 'نام استاد',
-    selector: row => row.progress,
+    selector: row => row.teacherName,
     sortable: true,
     cell: row => {
       return (
         <div className='d-flex flex-column w-100'>
-          <small className='mb-1'>{`${row.progress}%`}</small>
-          <Progress
-            value={row.progress}
-            style={{ height: '6px' }}
-            className={`w-100 progress-bar-${row.progressColor}`}
-          />
+          <small className='mb-1'>{row.teacherName}</small>
+
+        </div>
+      )
+    }
+  },
+  {
+    name: 'نام دوره',
+    selector: row => row.courseName,
+    sortable: true,
+    cell: row => {
+      return (
+        <div className='d-flex flex-column w-100'>
+          <small className='mb-1'>{row.courseName}</small>
+
         </div>
       )
     }
   },
 
+
 ]
 
 
 
-const GroupTab = () => {
+const GroupTab = ({ courseDetail }) => {
   const [modal, setModal] = useState(false)
+  const [currentPage, setCurrentPage] = useState(0)
+
+  // console.log(courseDetail.teacherId , "TeacherId")
+  const { courseId } = useParams()
+
+  const {
+    PageNumber,
+    SortingCol,
+    SortingType,
+    SearchInput
+  } = useCourseStore()
 
   const handleModal = () => setModal(!modal)
 
-  // const { courseId } = useParams()
-  // //query
-  // const { data: userList } = useQuery({
-  //   queryKey: ["userList"],
+  // const { data: groupListList } = useQuery({
+  //   queryKey: [
+  //     "groupListList",
+  //     PageNumber,
+  //     SearchInput,
+  //     SortingCol,
+  //     SortingType,
+  //   ],
   //   queryFn: () => {
-  //     const res = getCourseUsers(courseId)
-  //     return res
-  //   },
-
+  //     const result = getgroupList(
+  //       PageNumber,
+  //       SearchInput,
+  //       SortingCol,
+  //       SortingType,
+  //     )
+  //     return result;
+  //   }
   // });
 
-  // console.log(userList, "userList")
+
+
+  // const { teacherId } = useCourseStore();
+  // console.log(teacherId , "teacherId")
+  const { data: groupListList } = useQuery({
+    queryKey: [
+      "groupListList",
+      PageNumber,
+      SearchInput,
+      SortingCol,
+      SortingType,
+    ],
+    queryFn: () => {
+      const result = getgroupList(
+        PageNumber,
+        SearchInput,
+        SortingCol,
+        SortingType,
+      )
+      return result;
+
+    }
+  });
+
+  console.log(groupListList, "groupLislkrngdsng;qekflhboudfhgqpedhwr.tf gvjln jhpwfhugjhpunvhjnfuvgnoyudvhjyunkwsdguvntList")
+
+  const TeacherId = groupListList?.courseGroupDtos.find((e) => ({
+    value: e?.TeacherId,
+  }));
+
+  console.log(TeacherId, "TeacherId")
+
+  const { data: groupListid } = useQuery({
+    queryKey: ["groupListid", courseId, courseDetail.teacherId],
+    queryFn: () => {
+      const result = getCourseGroupid(
+        courseId, courseDetail.teacherId
+      );
+      return result;
+    },
+  });
+
+  console.log(groupListid, "groupList with id and techerid")
+
+
+  const { handlePageNumber } = useCourseStore();
+
+  const handlePagination = page => {
+    setCurrentPage(page.selected)
+    handlePageNumber(page.selected + 1);
+  }
+
+  const CustomPagination = () => (
+    <ReactPaginate
+      previousLabel=''
+      nextLabel=''
+      forcePage={currentPage}
+      onPageChange={page => handlePagination(page)}
+      pageCount={Math.ceil((groupListid?.length || 0) / 5)}
+      breakLabel='...'
+      pageRangeDisplayed={2}
+      marginPagesDisplayed={2}
+      activeClassName='active'
+      pageClassName='page-item'
+      breakClassName='page-item'
+      nextLinkClassName='page-link'
+      pageLinkClassName='page-link'
+      breakLinkClassName='page-link'
+      previousLinkClassName='page-link'
+      nextClassName='page-item next-item'
+      previousClassName='page-item prev-item'
+      containerClassName='pagination react-paginate separated-pagination pagination-sm justify-content-end pe-1 mt-1'
+    />
+  )
+
 
 
   return (
@@ -160,8 +199,12 @@ const GroupTab = () => {
         <DataTable
           noHeader
           responsive
+          pagination
+          paginationPerPage={5}
+          paginationComponent={CustomPagination}
+          paginationDefaultPage={currentPage + 1}
           columns={columns}
-          data={projectsArr}
+          data={groupListid || []}
           className='react-dataTable'
           sortIcon={<ChevronDown size={10} />}
         />

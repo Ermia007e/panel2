@@ -17,6 +17,10 @@ import YourCoursesList from "../../pages/Courses/YourCoursesList";
 import UserCourseReserve from "../../pages/Courses/UserCourseReserve";
 import CreateNewCourses from "../../pages/Courses/CreateNewCourses";
 import CourseDeatil from "../../pages/Courses/Detail/CourseDetail";
+import BlogList from "../../pages/Blogs/BlogList";
+import CreateNewBlogs from "../../pages/Blogs/CreateNewBlogs";
+import BlogCategoryList from "../../pages/Blogs/BlogCategoryList";
+import Schedual from "../../pages/Schedual/Schedual";
 
 const getLayout = {
   blank: <BlankLayout />,
@@ -36,13 +40,23 @@ const Login = lazy(() => import("../../pages/Login"));
 const Register = lazy(() => import("../../pages/Register"));
 const ForgotPassword = lazy(() => import("../../pages/ForgotPassword"));
 const Error = lazy(() => import("../../pages/Error"));
+const EditUser = lazy(() => import("../../views/user/AllUsers/EditUser"));
+const UserDetails = lazy(() => import('../../views/user/AllUsers/UserDetails'))
+const Comment = lazy(() => import('../../views/Comment/Comment'))
 const DashboardAnalytics = lazy(() => import('../../views/dashboard/analytics'))
 const DashboardEcommerce = lazy(() => import('../../views/dashboard/ecommerce'))
+
 const Sample = lazy(() => import("../../pages/Sample"));
+
+const AddNews = lazy(() => import("../../views/AddNews/AddNews"))
+const Department = lazy(() => import("../../views/Dpartment/Department"))
+const Building = lazy(() => import("../../views/building/Building"))
+const Chat = lazy(() => import("../../views/ChatWithTeachers/chat"))
+
 const NewsList = lazy(() => import('../../@core/components/newsList/newsLists/NewsList'));
 const NewsDetails = lazy(() => import('../../@core/components/newsList/newsLists/details/NewsDetails'));
 const EditNews = lazy(() => import('../../@core/components/newsList/newsLists/edit-form/EditNews'));
-const AddNews = lazy(() => import('../../@core/components/newsList/addNews/AddNews'));
+const AddNews1 = lazy(() => import('../../@core/components/newsList/addNews/AddNews'));
 const CategoryList = lazy(() => import('../../@core/components/newsList/category/CategoryList'));
 const AddCategory = lazy(() => import('../../@core/components/newsList/category/addCategory/AddCategory'));
 const EditCategory = lazy(() => import('../../@core/components/newsList/category/editCategory/EditCategory'));
@@ -50,7 +64,6 @@ const Assistance = lazy(() => import('../../@core/components/assistanceWork/assi
 const AsistanceWork = lazy(() => import('../../@core/components/assistanceWork/assistanceWork/AsistanceWork'));
 const EditWork = lazy(() => import('../../@core/components/assistanceWork/assistanceWork/editForm/EditWork'));
 const Edit = lazy(() => import('../../@core/components/assistanceWork/assistanceList/editForm/Edit'));
- 
 
 
 // ** Merge Routes
@@ -65,6 +78,38 @@ const Routes = [
     element: <Dashboard />,
   },
   {
+    path: "/chat",
+    element: <Chat />,
+  },
+  {
+    path: "/building",
+    element: <Building />,
+  },
+  {
+    path: "/Department",
+    element: <Department />,
+  },
+  {
+    path: "/users/details/:id",
+    element: <UserDetails />
+  },
+  {
+    path: "/users/edit/:id",
+    element: <EditUser />,
+  },
+  {
+    path: "/AddNews",
+    element: <AddNews />,
+  },
+  {
+    path: "/Comment",
+    element: <Comment />,
+  },
+  {
+    path: "/SecondPage",
+    element: <SecondPage />,
+  },
+  {
     path: '/dashboard/analytics',
     element: <DashboardAnalytics />
   },
@@ -73,25 +118,43 @@ const Routes = [
     element: <DashboardEcommerce />
   },
   {
-    path: "/dashboard/CoursesList",
+    path: "/Courses/CoursesList",
     element: <Courses />,
   },
+
   {
-    path: "/dashboard/YourCoursesList",
+    path: "/Courses/YourCoursesList",
     element: <YourCoursesList />,
   },
   {
-    path: "/dashboard/YourReserveCoursesList",
+    path: "/Courses/YourReserveCoursesList",
     element: <UserCourseReserve />,
   },
   {
     path: "/course-details/:courseId?",
-    element: <CourseDeatil/>,
+    element: <CourseDeatil />,
   },
   {
-    path: "/dashboard/CreateNewCourse",
+    path: "/Courses/CreateNewCourse",
     element: <CreateNewCourses />,
   },
+  {
+    path: "/Courses/Schedual",
+    element: <Schedual />,
+  },
+  {
+    path: "/Blogs/BlogList",
+    element: <BlogList />,
+  },
+  {
+    path: "/Blogs/CreateNewBlog",
+    element: <CreateNewBlogs />,
+  },
+  {
+    path: "/Blogs/CategoryList",
+    element: <BlogCategoryList />,
+  },
+
   {
     path: "/login",
     element: <Login />,
@@ -133,15 +196,15 @@ const Routes = [
   },
   {
     path: "/NewsDetails/:detailId",
-    element: <NewsDetails/>,
+    element: <NewsDetails />,
   },
   {
     path: "/EditNews/:editId",
-    element: <EditNews/>,
+    element: <EditNews />,
   },
   {
     path: "/AddNews",
-    element: <AddNews />,
+    element: <AddNews1 />,
   },
   {
     path: "/CategoryList",
@@ -165,11 +228,11 @@ const Routes = [
   },
   {
     path: "/EditWork/:workId",
-    element: <EditWork/>,
+    element: <EditWork />,
   },
   {
     path: "/Edit/:id",
-    element: <Edit/>,
+    element: <Edit />,
   },
 ];
 

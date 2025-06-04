@@ -20,6 +20,19 @@ import { selectThemeColors } from '@utils'
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
 import dateModifier from '../../../utility/dateModifier'
+import { getgroupList } from '../../../services/api/Blogs'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { getCreateCourse, UpdateCourse } from '../../../services/api/Create-Course/CreateCourse'
+import useCourseStore from '../../../zustand/useCourseStore '
+import { useNavigate } from 'react-router-dom'
+import { v4 as uuidv4 } from "uuid";
+import toast from "react-hot-toast";
+import { formDataModifire } from '../../../utility/formDataModifire'
+import generateUniqueString from '../../../utility/generateUniqueString'
+import EditCourse from './EditCourse'
+import AddNewSchedual from '../../../@core/components/Courses/Schedual/AddNewSchedual'
+
+
 
 const roleColors = {
   editor: 'light-info',
@@ -61,78 +74,16 @@ const MySwal = withReactContent(Swal)
 
 const UserInfoCard = ({ courseDetail }) => {
   // ** State
-  const [show, setShow] = useState(false)
-
-  // ** Hook
+  const [showModal, setShowModal] = useState(false);
+  const [modal, setModal] = useState(false)
   const {
-    reset,
-    control,
-    setError,
-    handleSubmit,
-    formState: { errors }
-  } = useForm({
-    defaultValues: {
-      username: courseDetail.teacherName,
-      lastName: courseDetail.teacherName.split(' ')[1],
-      firstName: courseDetail.teacherName.split(' ')[0]
-    }
-  })
+    PageNumber,
+    SortingCol,
+    SortingType,
+    SearchInput
+  } = useCourseStore()
 
-  // ** render user img
-  // const renderUserImg = () => {
-  //   if (courseDetail !== null && courseDetail.avatar.length) {
-  //     return (
-  //       <img
-  //         height='110'
-  //         width='110'
-  //         alt='user-avatar'
-  //         src={courseDetail.avatar}
-  //         className='img-fluid rounded mt-3 mb-2'
-  //       />
-  //     )
-  //   } else {
-  //     return (
-  //       <Avatar
-  //         initials
-  //         color={courseDetail.avatarColor || 'light-primary'}
-  //         className='rounded mt-3 mb-2'
-  //         content={courseDetail.fullName}
-  //         contentStyles={{
-  //           borderRadius: 0,
-  //           fontSize: 'calc(48px)',
-  //           width: '100%',
-  //           height: '100%'
-  //         }}
-  //         style={{
-  //           height: '110px',
-  //           width: '110px'
-  //         }}
-  //       />
-  //     )
-  //   }
-  // }
 
-  const onSubmit = data => {
-    if (Object.values(data).every(field => field.length > 0)) {
-      setShow(false)
-    } else {
-      for (const key in data) {
-        if (data[key].length === 0) {
-          setError(key, {
-            type: 'manual'
-          })
-        }
-      }
-    }
-  }
-
-  const handleReset = () => {
-    reset({
-      username: courseDetail.teacherName,
-      lastName: courseDetail.teacherName.split(' ')[1],
-      firstName: courseDetail.teacherName.split(' ')[0]
-    })
-  }
 
   const handleSuspendedClick = () => {
     return MySwal.fire({
@@ -169,13 +120,42 @@ const UserInfoCard = ({ courseDetail }) => {
     })
   }
 
+  const { data: groupListList } = useQuery({
+    queryKey: [
+      "groupListList",
+      PageNumber,
+      SearchInput,
+      SortingCol,
+      SortingType,
+    ],
+    queryFn: () => {
+      const result = getgroupList(
+        PageNumber,
+        SearchInput,
+        SortingCol,
+        SortingType,
+      )
+      return result;
+
+    }
+  });
+  console.log(groupListList, "groupListList")
+
+  const handleModal = () => setModal(!modal)
+
+  console.log(courseDetail.courseGroupId, "jsfewiohfpiwerh")
+
+
   return (
     <Fragment>
       <Card>
         <CardBody>
           <div className='user-avatar-section'>
             <div className='d-flex align-items-center flex-column'>
-              {courseDetail.imageAddress?imageAddress : "عکسی برای این دوره آپلود نشده"}
+
+              <img className='img-fluid w-50 rounded' src={courseDetail?.imageAddress || "عکسی برای این دوره آپلود نشده"} alt='عکس موجود نیست' />
+
+
               <div className='d-flex flex-column align-items-center text-center'>
                 <div className='user-info'>
                   <h4>{courseDetail !== null ? courseDetail.fullName : 'Eleanor Aguilar'}</h4>
@@ -237,24 +217,24 @@ const UserInfoCard = ({ courseDetail }) => {
                 <li className='mb-75'>
                   <span className='fw-bolder me-25'>تکنولوژی دوره:</span>
                   <span> {courseDetail.courseTeches}</span>
-                </li> 
+                </li>
                 <li className='mb-75'>
                   <span className='fw-bolder me-25'>قیمت:</span>
                   <span>{courseDetail.cost}</span>
                 </li>
                 <li className='mb-75'>
                   <span className='fw-bolder me-25'>شروع دوره:</span>
-                  <span>{dateModifier (courseDetail.startTime)}</span>
+                  <span>{dateModifier(courseDetail.startTime)}</span>
                 </li>
                 <li className='mb-75'>
                   <span className='fw-bolder me-25'>پایان دوره :</span>
-                  <span>{dateModifier (courseDetail.endTime)}</span>
+                  <span>{dateModifier(courseDetail.endTime)}</span>
                 </li>
               </ul>
             ) : null}
           </div>
           <div className='d-flex justify-content-center pt-2'>
-            <Button color='primary' onClick={() => setShow(true)}>
+            <Button color='primary' onClick={() => setShowModal(true)}>
               ویرایش اطلاعات
             </Button>
             <Button className='ms-1' color='danger' outline onClick={handleSuspendedClick}>
@@ -262,179 +242,13 @@ const UserInfoCard = ({ courseDetail }) => {
             </Button>
           </div>
         </CardBody>
+        <Button color='primary' onClick={() => setModal(true)}>
+          افزودن زمان‌بندی  جدید
+        </Button>
       </Card>
-      <Modal isOpen={show} toggle={() => setShow(!show)} className='modal-dialog-centered modal-lg'>
-        <ModalHeader className='bg-transparent' toggle={() => setShow(!show)}></ModalHeader>
-        <ModalBody className='px-sm-5 pt-50 pb-5'>
-          <div className='text-center mb-2'>
-            <h1 className='mb-1'>Edit User Information</h1>
-            <p>Updating user details will receive a privacy audit.</p>
-          </div>
-          <Form onSubmit={handleSubmit(onSubmit)}>
-            <Row className='gy-1 pt-75'>
-              <Col md={6} xs={12}>
-                <Label className='form-label' for='firstName'>
-                  نام :
-                </Label>
-                <Controller
-                  defaultValue=''
-                  control={control}
-                  id='firstName'
-                  name='firstName'
-                  render={({ field }) => (
-                    <Input {...field} id='firstName' placeholder='John' invalid={errors.firstName && true} />
-                  )}
-                />
-              </Col>
-              <Col md={6} xs={12}>
-                <Label className='form-label' for='lastName'>
-                  نام خانوادگی : 
-                </Label>
-                <Controller
-                  defaultValue=''
-                  control={control}
-                  id='lastName'
-                  name='lastName'
-                  render={({ field }) => (
-                    <Input {...field} id='lastName' placeholder='Doe' invalid={errors.lastName && true} />
-                  )}
-                />
-              </Col>
-              <Col xs={12}>
-                <Label className='form-label' for='username'>
-                  نام کاربر :
-                </Label>
-                <Controller
-                  defaultValue=''
-                  control={control}
-                  id='username'
-                  name='username'
-                  render={({ field }) => (
-                    <Input {...field} id='username' placeholder='john.doe.007' invalid={errors.username && true} />
-                  )}
-                />
-              </Col>
-              <Col md={6} xs={12}>
-                <Label className='form-label' for='billing-email'>
-                  ایمیل :  
-                </Label>
-                <Input
-                  type='email'
-                  id='billing-email'
-                  defaultValue={courseDetail.email}
-                  placeholder='example@domain.com'
-                />
-              </Col>
-              <Col md={6} xs={12}>
-                <Label className='form-label' for='status'>
-                  وضعیت دوره :
-                </Label>
-                <Select
-                  id='status'
-                  isClearable={false}
-                  className='react-select'
-                  classNamePrefix='select'
-                  options={statusOptions}
-                  theme={selectThemeColors}
-                  defaultValue={statusOptions[statusOptions.findIndex(i => i.value === courseDetail.status)]}
-                />
-              </Col>
-              <Col md={6} xs={12}>
-                <Label className='form-label' for='tax-id'>
-                  سطح دوره : 
-                </Label>
-                <Input
-                  id='tax-id'
-                  placeholder='Tax-1234'
-                  // defaultValue={courseDetail.contact.substr(courseDetail.contact.length - 4)}
-                />
-              </Col>
-              <Col md={6} xs={12}>
-                <Label className='form-label' for='contact'>
-                  نوع دوره
-                </Label>
-                <Input id='contact' defaultValue={courseDetail.contact} placeholder='+1 609 933 4422' />
-              </Col>
-              <Col md={6} xs={12}>
-                <Label className='form-label' for='language'>
-                  تکنولوژی دوره :
-                </Label>
-                <Select
-                  id='language'
-                  isClearable={false}
-                  className='react-select'
-                  classNamePrefix='select'
-                  options={languageOptions}
-                  theme={selectThemeColors}
-                  defaultValue={languageOptions[0]}
-                />
-              </Col>
-              <Col md={6} xs={12}>
-                <Label className='form-label' for='country'>
-                  قیمت :
-                </Label>
-                <Select
-                  id='country'
-                  isClearable={false}
-                  className='react-select'
-                  classNamePrefix='select'
-                  options={countryOptions}
-                  theme={selectThemeColors}
-                  defaultValue={countryOptions[0]}
-                />
-              </Col>
-              <Col md={6} xs={12}>
-                <Label className='form-label' for='language'>
-                  شروع و پایان دوره :
-                </Label>
-                <Select
-                  id='language'
-                  isClearable={false}
-                  className='react-select'
-                  classNamePrefix='select'
-                  options={languageOptions}
-                  theme={selectThemeColors}
-                  defaultValue={languageOptions[0]}
-                />
-              </Col>
-              <Col xs={12}>
-                <div className='d-flex align-items-center mt-1'>
-                  <div className='form-switch'>
-                    <Input type='switch' defaultChecked id='billing-switch' name='billing-switch' />
-                    <Label className='form-check-label' htmlFor='billing-switch'>
-                      <span className='switch-icon-left'>
-                        <Check size={14} />
-                      </span>
-                      <span className='switch-icon-right'>
-                        <X size={14} />
-                      </span>
-                    </Label>
-                  </div>
-                  <Label className='form-check-label fw-bolder' for='billing-switch'>
-                    Use as a billing address?
-                  </Label>
-                </div>
-              </Col>
-              <Col xs={12} className='text-center mt-2 pt-50'>
-                <Button type='submit' className='me-1' color='primary'>
-                  Submit
-                </Button>
-                <Button
-                  type='reset'
-                  color='secondary'
-                  outline
-                  onClick={() => {
-                    handleReset()
-                    setShow(false)
-                  }}
-                >
-                  Discard
-                </Button>
-              </Col>
-            </Row>
-          </Form>
-        </ModalBody>
-      </Modal>
+      <EditCourse courseDetail={courseDetail} show={showModal} setShow={setShowModal} />
+      <AddNewSchedual open={modal} handleModal={handleModal} />
+
     </Fragment>
   )
 }

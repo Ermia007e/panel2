@@ -13,46 +13,49 @@ import { Label, Row, Col, Form, Input, Button } from 'reactstrap'
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { CreateCourse, getCreateCourse } from '../../../../services/api/Create-Course/CreateCourse'
+import toast from 'react-hot-toast'
+import useCourseStore from '../../../../zustand/useCourseStore '
 const CourseTech = ({ stepper, type }) => {
-    const countryOptions = [
-        { value: 'UK', label: 'UK' },
-        { value: 'USA', label: 'USA' },
-        { value: 'Spain', label: 'Spain' },
-        { value: 'France', label: 'France' },
-        { value: 'Italy', label: 'Italy' },
-        { value: 'Australia', label: 'Australia' }
-    ]
 
-    const languageOptions = [
-        { value: 'English', label: 'English' },
-        { value: 'French', label: 'French' },
-        { value: 'Spanish', label: 'Spanish' },
-        { value: 'Italian', label: 'Italian' },
-        { value: 'Japanese', label: 'Japanese' }
-    ]
-    return (
-        <Fragment>
-            <div className='content-header'>
-                <h5 className='mb-0'>تکنولوژی های دوره را وارد کنید </h5>
-            </div>
-            <Form onSubmit={e => e.preventDefault()}>
-                <Col md='6' className='mb-1'>
-                    <Label className='form-label' for={`language-${type}`}>
-                        تکنولوژی ها             </Label>
-                    <Select
-                        isMulti
-                        isClearable={false}
-                        theme={selectThemeColors}
-                        id={`language-${type}`}
-                        options={languageOptions}
-                        className='react-select'
-                        classNamePrefix='select'
-                    />
-                </Col>
+  const {
+    setTechId
+  } = useCourseStore()
 
-            </Form>
-        </Fragment>
-    )
+  const { data: createCourse } = useQuery({
+    queryKey: ["createCourse"],
+    queryFn: getCreateCourse,
+  });
+
+  const techType = createCourse?.technologyDtos.map((e) => ({
+    value: e?.id,
+    label: e?.techName,
+  }));
+
+  return (
+    <Fragment>
+      <div className='content-header'>
+        <h3 className='py-2'>تکنولوژی های دوره را وارد کنید </h3>
+      </div>
+      <Form onSubmit={e => e.preventDefault()}>
+        <Col md='6' className='mb-1'>
+          <Label className='form-label' for={`language-${type}`}>
+            تکنولوژی ها             </Label>
+          <Select
+            isClearable={false}
+            theme={selectThemeColors}
+            options={techType}
+            onChange={(selected) => setTechId(selected?.value)}
+            className='react-select'
+            classNamePrefix='select'
+            placeholder='انتخاب کنید'
+          />
+        </Col>
+
+      </Form>
+    </Fragment>
+  )
 }
 
 export default CourseTech

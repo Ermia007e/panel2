@@ -12,7 +12,9 @@ export function AllUsers(){
   }
 
 return(
+  <>
     <Tabs active={active} toggleTab={toggleTab} />
+    </>
 )
      
 }
