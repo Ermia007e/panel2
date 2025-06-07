@@ -36,7 +36,7 @@ const AddNewModal = ({ open, handleModal }) => {
     },
     onSuccess: () => {
       toast.success(" گروه شما با موفقیت اضافه شد");
-      client.invalidateQueries({ queryKey: ["groupListList"] });
+      client.invalidateQueries({ queryKey: ["groupListid"] });
     },
     onError: () => {
       toast.error("خطا");

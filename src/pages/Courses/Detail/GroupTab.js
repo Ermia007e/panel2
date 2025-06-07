@@ -78,74 +78,12 @@ export const columns = [
 
 ]
 
-
-
 const GroupTab = ({ courseDetail }) => {
   const [modal, setModal] = useState(false)
   const [currentPage, setCurrentPage] = useState(0)
-
-  // console.log(courseDetail.teacherId , "TeacherId")
   const { courseId } = useParams()
 
-  const {
-    PageNumber,
-    SortingCol,
-    SortingType,
-    SearchInput
-  } = useCourseStore()
-
   const handleModal = () => setModal(!modal)
-
-  // const { data: groupListList } = useQuery({
-  //   queryKey: [
-  //     "groupListList",
-  //     PageNumber,
-  //     SearchInput,
-  //     SortingCol,
-  //     SortingType,
-  //   ],
-  //   queryFn: () => {
-  //     const result = getgroupList(
-  //       PageNumber,
-  //       SearchInput,
-  //       SortingCol,
-  //       SortingType,
-  //     )
-  //     return result;
-  //   }
-  // });
-
-
-
-  // const { teacherId } = useCourseStore();
-  // console.log(teacherId , "teacherId")
-  const { data: groupListList } = useQuery({
-    queryKey: [
-      "groupListList",
-      PageNumber,
-      SearchInput,
-      SortingCol,
-      SortingType,
-    ],
-    queryFn: () => {
-      const result = getgroupList(
-        PageNumber,
-        SearchInput,
-        SortingCol,
-        SortingType,
-      )
-      return result;
-
-    }
-  });
-
-  console.log(groupListList, "groupLislkrngdsng;qekflhboudfhgqpedhwr.tf gvjln jhpwfhugjhpunvhjnfuvgnoyudvhjyunkwsdguvntList")
-
-  const TeacherId = groupListList?.courseGroupDtos.find((e) => ({
-    value: e?.TeacherId,
-  }));
-
-  console.log(TeacherId, "TeacherId")
 
   const { data: groupListid } = useQuery({
     queryKey: ["groupListid", courseId, courseDetail.teacherId],
@@ -156,9 +94,6 @@ const GroupTab = ({ courseDetail }) => {
       return result;
     },
   });
-
-  console.log(groupListid, "groupList with id and techerid")
-
 
   const { handlePageNumber } = useCourseStore();
 

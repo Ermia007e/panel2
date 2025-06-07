@@ -24,13 +24,14 @@ import { getgroupList } from '../../../services/api/Blogs'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { getCreateCourse, UpdateCourse } from '../../../services/api/Create-Course/CreateCourse'
 import useCourseStore from '../../../zustand/useCourseStore '
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { v4 as uuidv4 } from "uuid";
 import toast from "react-hot-toast";
 import { formDataModifire } from '../../../utility/formDataModifire'
 import generateUniqueString from '../../../utility/generateUniqueString'
 import EditCourse from './EditCourse'
 import AddNewSchedual from '../../../@core/components/Courses/Schedual/AddNewSchedual'
+import { getCourseGroupid } from '../../../services/api/Courses'
 
 
 
@@ -76,14 +77,6 @@ const UserInfoCard = ({ courseDetail }) => {
   // ** State
   const [showModal, setShowModal] = useState(false);
   const [modal, setModal] = useState(false)
-  const {
-    PageNumber,
-    SortingCol,
-    SortingType,
-    SearchInput
-  } = useCourseStore()
-
-
 
   const handleSuspendedClick = () => {
     return MySwal.fire({
@@ -119,27 +112,18 @@ const UserInfoCard = ({ courseDetail }) => {
       }
     })
   }
-
-  const { data: groupListList } = useQuery({
-    queryKey: [
-      "groupListList",
-      PageNumber,
-      SearchInput,
-      SortingCol,
-      SortingType,
-    ],
+  const { courseId } = useParams()
+  const { data: groupListid } = useQuery({
+    queryKey: ["groupListid", courseId, courseDetail.teacherId],
     queryFn: () => {
-      const result = getgroupList(
-        PageNumber,
-        SearchInput,
-        SortingCol,
-        SortingType,
-      )
+      const result = getCourseGroupid(
+        courseId, courseDetail.teacherId
+      );
       return result;
-
-    }
+    },
   });
-  console.log(groupListList, "groupListList")
+
+  console.log(groupListid, "groupList with id and techerid")
 
   const handleModal = () => setModal(!modal)
 
@@ -247,7 +231,7 @@ const UserInfoCard = ({ courseDetail }) => {
         </Button>
       </Card>
       <EditCourse courseDetail={courseDetail} show={showModal} setShow={setShowModal} />
-      <AddNewSchedual open={modal} handleModal={handleModal} />
+      <AddNewSchedual groupListid={groupListid} open={modal} handleModal={handleModal} />
 
     </Fragment>
   )

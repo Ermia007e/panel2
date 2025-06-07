@@ -22,7 +22,7 @@ import { AddSchedual } from '../../../../services/api/Add-Schedual/AddSchedual'
 import { getgroupList } from '../../../../services/api/Blogs'
 import useCourseStore from '../../../../zustand/CourseSlice'
 
-const AddNewSchedual = ({ open, handleModal }) => {
+const AddNewSchedual = ({ open, handleModal,groupListid }) => {
   const client = useQueryClient();
   const [startDate, setstartDate] = useState('');
   const [startTime, setstartTime] = useState('');
@@ -40,29 +40,10 @@ const AddNewSchedual = ({ open, handleModal }) => {
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
   const { id } = useParams()
   
-  const { data: groupListList } = useQuery({
-    queryKey: [
-      "groupListList",
-      PageNumber,
-      SearchInput,
-      SortingCol,
-      SortingType,
-    ],
-    queryFn: () => {
-      const result = getgroupList(
-        PageNumber,
-        SearchInput,
-        SortingCol,
-        SortingType,
-      )
-      return result;
 
-    }
-  });
+  console.log(groupListid, "groupListid")
 
-  console.log(groupListList, "groupListList")
-
-  const getGroupName = groupListList?.courseGroupDtos.map((e) => ({
+  const getGroupName = groupListid?.map((e) => ({
     value: e?.groupId,
     label: e?.groupName	,
   }));
