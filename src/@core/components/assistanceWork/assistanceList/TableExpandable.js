@@ -149,7 +149,7 @@ const DataTableWithButtons = ({ data, courses, coursesLoading }) => {
   return (
     <>
       <Card className='border-0 shadow-sm'>
-        <CardHeader className='bg-white border-bottom d-flex justify-content-between align-items-center gap-3'>
+        <CardHeader className='border-bottom d-flex justify-content-between align-items-center gap-3'>
           <CardTitle tag='h4' className='text-center'>لیست استادیارها</CardTitle>
           <div className='d-flex justify-content-center'>
             <div className='position-relative' style={{width: '250px'}}>
