@@ -8,7 +8,7 @@ import { MoreVertical, Edit, FileText, Archive, Trash, Link } from 'react-feathe
 import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 
 import { useMutation, useQueryClient } from 'react-query'
-import { deleteCourse, expireCourses, isActiveCourses } from '../../../../services/api/Courses'
+import { changeReserve, deleteCourse, expireCourses, isActiveCourses } from '../../../../services/api/Courses'
 import toast from 'react-hot-toast'
 import dateModifier from '../../../../utility/dateModifier'
 import { NavLink } from 'react-router-dom'
@@ -70,31 +70,15 @@ export const columns = [
     cell: (row) => {
       const queryClient = useQueryClient()
 
-      const deleteCourseList = () => {
-        const deletedCourses = { id: row.courseId, active: !row.isdelete };
-        mutation.mutate(deletedCourses);
-      };
 
-
-      const mutation = useMutation({
-        mutationFn: deleteCourse,
-        onSuccess: () => {
-          toast.success("عملیات موفقیت امیز بود");
-          queryClient.invalidateQueries(['coursesList'])
-        },
-        onError: () => {
-          toast.error("خطا");
-        },
-      });
-
-      const expireCourseList = () => {
-        const expireCouress = { id: row.courseId, active: !row.isExpire };
+      const changeReservetoCourse = () => {
+        const expireCouress = { id: row.courseId, courseGroupId: !row.isExpire };
         expireCourse.mutate(expireCouress);
       };
 
 
       const expireCourse = useMutation({
-        mutationFn: expireCourses,
+        mutationFn: changeReserve,
         onSuccess: () => {
           toast.success("عملیات موفقیت امیز بود");
           queryClient.invalidateQueries(['coursesList'])
@@ -105,22 +89,6 @@ export const columns = [
       });
 
 
-      const activeCourseList = () => {
-        const activeCouress = { id: row.courseId, active: !row.isActive };
-        activeCourse.mutate(activeCouress);
-      };
-
-
-      const activeCourse = useMutation({
-        mutationFn: isActiveCourses,
-        onSuccess: () => {
-          toast.success("عملیات موفقیت امیز بود");
-          queryClient.invalidateQueries(['coursesList'])
-        },
-        onError: () => {
-          toast.error("خطا");
-        },
-      });
 
       return (
         <div className='d-flex'>
@@ -134,12 +102,28 @@ export const columns = [
                 e.preventDefault()
               }}>
                 <NavLink to={`/course-details/${row.courseId}`}>
-                  <FileText size={15} />
-                  <span className='align-middle ms-50'>
-                    جزئیات </span>
+                    جزئیات
+                    {row.title}
                 </NavLink>
 
               </DropdownItem>
+
+              <DropdownItem
+                onClick={(e) => {
+                  e.preventDefault()
+                  changeReservetoCourse(row.courseId)
+                }}
+                tag='a' href='/' className='w-100' >
+                <Archive size={15}
+
+                />
+                <span className='align-middle ms-50'
+                >
+                  {row.accept}
+                </span>
+
+              </DropdownItem>
+
             </DropdownMenu>
           </UncontrolledDropdown>
           <Edit size={15} />

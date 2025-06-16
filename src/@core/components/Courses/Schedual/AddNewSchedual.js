@@ -38,7 +38,7 @@ const AddNewSchedual = ({ open, handleModal,groupListid }) => {
   } = useCourseStore()
   // ** Custom close btn
   const CloseBtn = <X className='cursor-pointer' size={15} onClick={handleModal} />
-  const { id } = useParams()
+  const { courseId } = useParams()
   
 
   console.log(groupListid, "groupListid")
@@ -53,7 +53,7 @@ const AddNewSchedual = ({ open, handleModal,groupListid }) => {
 
   const mutation = useMutation({
     mutationFn: (data) => {
-      return AddSchedual(data);
+      return AddSchedual(data,courseId);
     },
     onSuccess: () => {
       toast.success("زمان‌بندی  شما با موفقیت اضافه شد");

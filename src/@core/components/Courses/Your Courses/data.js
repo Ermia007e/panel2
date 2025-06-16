@@ -46,25 +46,25 @@ const ExpandableTable = ({ data }) => {
 
 // ** Table Common Column
 export const columns = [
-    {
-      minWidth: '120px',
-      sortable: row => row.full_name,
-      cell: row => (
-        <div className='d-flex align-items-center'>
-          {row.avatar === '' ? (
-            <Avatar color={`light-${states[row.status]}`} content={row.full_name} initials />
-          ) : (
-            <Avatar img={row.tumbImageAddress} />
-          )}
-          <div className='user-info text-truncate ms-1'>
-            <span className='d-block fw-bold text-truncate'>{row.tumbImageAddress}</span>
-            <small>{row.tumbImageAddress}</small>
-          </div>
+  {
+    minWidth: '120px',
+    sortable: row => row.full_name,
+    cell: row => (
+      <div className='d-flex align-items-center'>
+        {row.avatar === '' ? (
+          <Avatar color={`light-${states[row.status]}`} content={row.full_name} initials />
+        ) : (
+          <Avatar img={row.tumbImageAddress} />
+        )}
+        <div className='user-info text-truncate ms-1'>
+          <span className='d-block fw-bold text-truncate'>{row.tumbImageAddress}</span>
+          <small>{row.tumbImageAddress}</small>
         </div>
-      )
-    },
+      </div>
+    )
+  },
 
-    {
+  {
     name: 'نام گروه',
     sortable: true,
     minWidth: '100px',
@@ -72,7 +72,8 @@ export const columns = [
       <Link to={`/course-details/${row.courseId}`} className='d-flex align-items-center'>
         {row.title}
       </Link>
-    )  },
+    )
+  },
 
   {
     name: 'مدرس',

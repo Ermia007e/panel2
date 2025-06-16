@@ -58,6 +58,15 @@ export const expireCourses = async (expire) => {
   }
 }
 
+export const changeReserve = async (expire) => {
+  try {
+      const response = await http.post("/CourseReserve/SendReserveToCourse", expire)
+      console.log('response', expire);
+      return response
+  } catch (error) {
+      throw error
+  }
+}
 export const isActiveCourses = async (active) => {
   try {
       const response = await http.put("/Course/ActiveAndDeactiveCourse", active)

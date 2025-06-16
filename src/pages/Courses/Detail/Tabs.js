@@ -82,7 +82,7 @@ const UserTabs = ({ active, toggleTab }) => {
         </TabPane>
 
         <TabPane tabId='4'>
-          <UserReserved />
+          <UserReserved  />
         </TabPane>
 
         <TabPane tabId='5'>
