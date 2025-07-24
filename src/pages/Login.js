@@ -1,11 +1,9 @@
 // ** React Imports
 import { useSkin } from "@hooks/useSkin";
-import { Link } from "react-router-dom";
-import React from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { loginStep } from "../services/api/auth/login.api";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import useStore from "../constant/store/login";
 import { loginValidation } from "../@core/validations/login";
 
@@ -14,7 +12,8 @@ import { Facebook, Twitter, Mail, GitHub } from "react-feather";
 
 // ** Custom Components
 import InputPasswordToggle from "@components/input-password-toggle";
-import { Formik, Form, Field } from "formik"
+import { Formik, Form, Field } from "formik";
+
 // ** Reactstrap Imports
 import {
   Row,
@@ -22,7 +21,6 @@ import {
   CardTitle,
   CardText,
   Label,
-  Input,
   Button,
 } from "reactstrap";
 
@@ -37,6 +35,8 @@ const Login = () => {
   const setLoginInfo = useStore((state) => state.setLoginInfo);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { skin } = useSkin();
+  const source = skin === "dark" ? illustrationsDark : illustrationsLight;
 
   const handleSubmit = async (value) => {
     try {
@@ -44,8 +44,15 @@ const Login = () => {
 
       if (data?.success) {
         toast.success(data?.message || "ورود موفقیت‌آمیز بود!");
+
         if (data?.token) {
-          localStorage.setItem("token", data?.token);
+          // ذخیره توکن بر اساس وضعیت rememberMe
+          if (value.rememberMe) {
+            localStorage.setItem("token", data?.token);
+          } else {
+            sessionStorage.setItem("token", data?.token);
+          }
+
           navigate("/Dashboard");
         }
       } else {
@@ -55,36 +62,32 @@ const Login = () => {
       toast.error("مشکلی در ارتباط با سرور پیش آمده!");
     }
   };
-  const { skin } = useSkin();
-
-  const source = skin === "dark" ? illustrationsDark : illustrationsLight;
 
   return (
     <div className="auth-wrapper auth-cover">
       <Row className="auth-inner m-0">
         <Link className="brand-logo" to="/" onClick={(e) => e.preventDefault()}>
-        <img src="../../src/assets/images/logo/bahrAcademy.svg"/>
+          <img src="../../src/assets/images/logo/bahrAcademy.svg" />
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
             <img className="img-fluid" src={source} alt="Login Cover" />
           </div>
         </Col>
-        <Col
-          className="d-flex align-items-center auth-bg px-2 p-lg-5"
-          lg="4"
-          sm="12"
-        >
+        <Col className="d-flex align-items-center auth-bg px-2 p-lg-5" lg="4" sm="12">
           <Col className="px-xl-2 mx-auto" sm="8" md="6" lg="12">
             <CardTitle tag="h2" className="fw-bold mb-1">
               به پنل ادمین خوش آمدید! 👋
             </CardTitle>
             <CardText className="mb-2">
-              لطفا برای دسترسی به پنل ادمین ورود کنید            </CardText>
+              لطفا برای دسترسی به پنل ادمین ورود کنید
+            </CardText>
+
             <Formik
               initialValues={{
-                password: "",
                 phoneOrGmail: "",
+                password: "",
+                rememberMe: false
               }}
               validationSchema={loginValidation}
               onSubmit={handleSubmit}
@@ -93,13 +96,21 @@ const Login = () => {
                 <Form className="auth-login-form mt-2">
                   <div className="mb-1">
                     <Label className="form-label" htmlFor="phoneOrGmail">ایمیل یا شماره تماس</Label>
-                    <Field type="email" name="phoneOrGmail" id="phoneOrGmail" placeholder="ایمیل یا شماره تماس را وارد کنید" className="form-control" />
+                    <Field
+                      // type="email"
+                      name="phoneOrGmail"
+                      id="phoneOrGmail"
+                      placeholder="ایمیل یا شماره تماس را وارد کنید"
+                      className="form-control"
+                    />
                   </div>
+
                   <div className="mb-1">
                     <div className="d-flex justify-content-between">
                       <Label className="form-label" htmlFor="password">رمز عبور</Label>
-                      <Link to="/forgot-password"><small>رمزت رو فراموش کردی؟
-                      </small></Link>
+                      <Link to="/forgot-password">
+                        <small>رمزت رو فراموش کردی؟</small>
+                      </Link>
                     </div>
                     <Field
                       className="input-group-merge"
@@ -107,27 +118,37 @@ const Login = () => {
                       as={InputPasswordToggle}
                     />
                   </div>
+
                   <div className="form-check mb-1">
-                    <Field type="checkbox" name="rememberMe" className="form-check-input" id="remember-me" />
-                    <Label className="form-check-label" htmlFor="remember-me">                    منو به یاد بیار
+                    <Field
+                      type="checkbox"
+                      name="rememberMe"
+                      className="form-check-input"
+                      id="remember-me"
+                    />
+                    <Label className="form-check-label" htmlFor="remember-me">
+                      منو به یاد بیار
                     </Label>
                   </div>
+
                   <Button type="submit" color="primary" block disabled={isSubmitting}>
                     ورود به پنل
-
                   </Button>
                 </Form>
               )}
             </Formik>
+
             <p className="text-center mt-2">
               <span className="me-25">تا حالا به پلتفرم ما نیومدی؟</span>
               <Link to="/register">
                 <span>یه اکانت درست کن</span>
               </Link>
             </p>
+
             <div className="divider my-2">
               <div className="divider-text">or</div>
             </div>
+
             <div className="auth-footer-btn d-flex justify-content-center">
               <Button color="facebook">
                 <Facebook size={14} />

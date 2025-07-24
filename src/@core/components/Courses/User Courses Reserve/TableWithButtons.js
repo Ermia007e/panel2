@@ -214,7 +214,7 @@ const DataTableWithButtons = () => {
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledButtonDropdown>
-            <NavLink to={"/dashboard/CreateNewCourse"}>
+            <NavLink to={"/Courses/CreateNewCourse"}>
                    <Button className='ms-2' color='primary' onClick={handleModal}>
               <Plus size={20} />
               <span className='align-middle ms-50'>ساخت دوره ی جدید</span>

@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { NewsCategoryById } from '../../../../../services/api/newList/getNewsCategoryById';
+import toast from 'react-hot-toast';
 
 const EditCategoryForm = () => {
   const { categoryId } = useParams();
@@ -59,7 +60,7 @@ const EditCategoryForm = () => {
       },
       onError: (error) => {
         console.error('Error updating category:', error);
-        toast.error('خطا در ویرایش دسته بندی');
+        toast .error('خطا در ویرایش دسته بندی');
       }
     }
   );

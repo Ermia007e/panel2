@@ -121,7 +121,6 @@ const uniqueStr = generateUniqueString();
       return res;
     },
     onSuccess: () => {
-      toast.success("دوره شما ثبت شد");
       client.invalidateQueries({ queryKey: ["yourCourses"] });
       nextTab();
     },

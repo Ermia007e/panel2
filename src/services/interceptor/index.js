@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const baseURL = "https://classapi.sepehracademy.ir/api"
+const baseURL = "https://sepehracademy.liara.run"
 
 const instance = axios.create({
   baseURL: baseURL,

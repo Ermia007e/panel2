@@ -2,26 +2,15 @@ import { Mail, Home, Airplay, Circle, List, User } from "react-feather";
 
 
 export default [
+
+
   {
-    id: "dashboard",
-    title: "داشبورد",
+    id: 'dashboard',
+    title: 'داشبورد',
     icon: <Home size={20} />,
-    navLink: "/dashboard",
-    children: [
-      {
-        id: 'analyticsDash',
-        title: 'Analytics',
-        icon: <Circle size={12} />,
-        navLink: '/dashboard/analytics'
-      },
-      {
-        id: 'eCommerceDash',
-        title: 'eCommerce',
-        icon: <Circle size={12} />,
-        navLink: '/dashboard/ecommerce'
-      }
-    ],
+    navLink: '/dashboard/ecommerce'
   },
+
   {
     id: "Courses",
     title: "دوره ها",
@@ -131,7 +120,7 @@ export default [
     navLink: '/building'
   },
 
-    {
+  {
     id: 'chat',
     title: 'چت',
     icon: <Circle size={12} />,
@@ -147,29 +136,8 @@ export default [
 
   {
     id: 'SecondPage',
-    title: 'نظرات',
+    title: 'کاربران',
     icon: <Circle size={12} />,
     navLink: '/SecondPage'
-  },
-  {
-    id: "Comments",
-    title: "نظرات",
-    icon: <Mail size={20} />,
-    navLink: "/Comments",
-    children: [
-      {
-        id: 'BlogsComment',
-        title: 'نظرات بلاگ ها',
-        icon: <Circle size={12} />,
-        navLink: '/Comments/BlogsComment'
-      },
-      {
-        id: 'CoursesCommnet',
-        title: 'نظرات دوره ها',
-        icon: <Circle size={12} />,
-        navLink: '/Comments/CoursesCommnet'
-      },
-
-    ]
   },
 ];
